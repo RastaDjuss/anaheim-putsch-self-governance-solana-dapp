@@ -1,0 +1,31 @@
+[toolchain]
+anchor_version = "0.31.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+anaheim = "CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou" # Program ID pour le programme anaheim
+journal = "7vtfmh5CTMaXyFFZWJm9TbPeRK8XJGB1n5rF9G5qFYhm"  # Program ID pour le programme journal
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"                              # Cluster local pour les tests
+wallet = "~/.config/solana/id.json"              # Fichier de portefeuille utilisé pour signer les transactions
+
+[scripts]
+test_mocha = "mocha -t 1000000 tests/"           # Commande pour exécuter les tests avec Mocha
+test_jest = "../node_modules/.bin/jest --preset ts-jest" # Commande pour exécuter les tests avec Jest
+
+[test]
+startup_wait = 5000                               # Attente après le démarrage pour initialisation (en ms)
+shutdown_wait = 2000                              # Attente avant arrêt de la validation (en ms)
+upgradeable = false                               # Ne pas compiler les programmes en mode "Upgradeable loader"
+
+[test.validator]
+bind_address = "127.0.0.1"                        # Adresse de liaison pour le validateur Solana
+ledger = ".anchor/test-ledger"                    # Chemin du registre local (test-ledger)
+rpc_port = 8899                                   # Port RPC local affiché par le validateur

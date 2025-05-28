@@ -1,0 +1,24 @@
+[package]
+name = "anaheim"
+version = "0.1.0"
+description = "Solan Governance Dapp and social media for powerr to the people nextjs, react, typescript and anchor used"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "anaheim"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.31.1", features = ["init-if-needed"] }
+solana-program = "2.1.1"
+
+
+
