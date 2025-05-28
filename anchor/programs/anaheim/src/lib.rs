@@ -1,89 +1,98 @@
-mod validate_post_content;
-mod error_code;
-
-use std::alloc::System;
-use solana_program::account_info::Account;
 use anchor_lang::prelude::*;
-use anchor_lang::prelude::Accounts;
-use anchor_lang::prelude::Signer;
-use anchor_lang::prelude::Program;
-use anchor_lang::declare_id;
-use anchor_lang::system_program;
 
-declare_id!("5MnaAytYXpZGURgzVah9khUwLqx6tqRP4AYZPRdsXEKi");
+/// ─── IDENTIFIANT DU PROGRAMME ───────────────────────────────────────────────
+declare_id!("CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou");
 
-/// CONSTANTES & CODES D’ERREUR
-pub const MAX_MESSAGE_LENGTH: usize = 280;
+/// ─── CONSTANTES ─────────────────────────────────────────────────────────────
+pub const MAX_CONTENT_LENGTH: usize  = 256;
+pub const MAX_USERNAME_LENGTH: usize = 32;
 
+/// ─── ERREURS ────────────────────────────────────────────────────────────────
 #[error_code]
 pub enum ErrorCode {
-  #[msg("Invalid content. It cannot be empty.")]
-  InvalidContent,
-  #[msg("Content is too long.")]
+  #[msg("Content exceeds max allowable length.")]
   ContentTooLong,
-  #[msg("Failed to validate content.")]
-  ValidationError,
+  #[msg("Username exceeds max allowable length.")]
+  UsernameTooLong,
+  #[msg("Content is invalid (empty or whitespace only).")]
+  InvalidContent,
 }
 
-/// COMPTE POUR LES POSTS
-#[account(anchor_lang::prelude)]
+/// ─── COMPTES STRUCTURÉS ─────────────────────────────────────────────────────
+#[account]
+pub struct UserAccount {
+  pub name: String,
+  pub user_authority: Pubkey,
+}
+impl UserAccount {
+  pub const SIZE: usize = 8 + 4 + MAX_USERNAME_LENGTH + 32;
+}
+
+#[account]
 pub struct PostAccount {
-  pub content: String,   // Contenu
-  pub author: Pubkey,    // Clé publique de l'auteur
-  pub timestamp: i64,    // Horodatage
+  pub content: String,
+  pub author: Pubkey,
+  pub timestamp: i64,
 }
-
 impl PostAccount {
-  /// Taille du compte calculée pour Anchor
-  pub const SIZE: usize = 8 + 4 + MAX_MESSAGE_LENGTH + 32 + 8;
+  pub const SIZE: usize = 8 + 4 + MAX_CONTENT_LENGTH + 32 + 8;
 }
 
-/// CONTEXTE D’INSTRUCTION : CREATE_POST
+/// ─── CONTEXTES D'INSTRUCTIONS ───────────────────────────────────────────────
+#[derive(Accounts)]
+pub struct CreateUser<'info> {
+  #[account(init, payer = authority, space = UserAccount::SIZE)]
+  pub user_account: Account<'info, UserAccount>,
+  #[account(mut)]
+  pub authority: Signer<'info>,
+  pub system_program: Program<'info, System>,
+}
+
 #[derive(Accounts)]
 pub struct CreatePost<'info> {
   #[account(init, payer = user, space = PostAccount::SIZE)]
   pub post_account: Account<'info, PostAccount>,
-
   #[account(mut)]
   pub user: Signer<'info>,
-
-  /// Vérification explicite de l’adresse du programme système
-  #[account(address = anchor_lang::system_program::ID)]
   pub system_program: Program<'info, System>,
 }
 
-/// PROGRAMME PRINCIPAL
+/// ─── PROGRAMME PRINCIPAL ────────────────────────────────────────────────────
 #[program]
-mod anaheim {
+pub mod anaheim {
   use super::*;
 
-  /// Fonction pour créer un post
-  pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
-    // Vérification personnalisée de la longueur et du contenu
-    validate_post_content(&content).map_err(|validation_error| match validation_error {
-      "Content is empty." => ErrorCode::InvalidContent.into(),
-      "Content exceeds max allowable length." => ErrorCode::ContentTooLong.into(),
-      _ => ErrorCode::ValidationError.into(),
-    })?;
+  pub fn create_user(ctx: Context<CreateUser>, username: String) -> Result<()> {
+    let trimmed = username.trim();
+    if trimmed.is_empty() {
+      return err!(ErrorCode::InvalidContent);
+    }
+    if trimmed.len() > MAX_USERNAME_LENGTH {
+      return err!(ErrorCode::UsernameTooLong);
+    }
 
-    // Remplir le compte avec les informations fournies
-    let post_account = &mut ctx.accounts.post_account;
-    post_account.content = content;
-    post_account.author = *ctx.accounts.user.key;
-    post_account.timestamp = Clock::get()?.unix_timestamp;
+    let user_account = &mut ctx.accounts.user_account;
+    user_account.name = trimmed.to_string();
+    user_account.user_authority = *ctx.accounts.authority.key;
 
     Ok(())
   }
-}
 
-/// FONCTIONS SUPPLÉMENTAIRES
-pub fn validate_post_content(content: &str) -> Result<(), &'static str> {
-  let trimmed = content.trim();
-  if trimmed.is_empty() {
-    return Err("Content is empty.");
+  pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
+    let trimmed = content.trim();
+    if trimmed.is_empty() {
+      return err!(ErrorCode::InvalidContent);
+    }
+    if trimmed.len() > MAX_CONTENT_LENGTH {
+      return err!(ErrorCode::ContentTooLong);
+    }
+
+    let post_account = &mut ctx.accounts.post_account;
+    post_account.content = trimmed.to_string();
+    post_account.author = *ctx.accounts.user.key;
+    post_account.timestamp = Clock::get()?.unix_timestamp;
+
+    msg!("Post created by {:?} at {}", post_account.author, post_account.timestamp);
+    Ok(())
   }
-  if trimmed.len() > MAX_MESSAGE_LENGTH {
-    return Err("Content exceeds max allowable length.");
-  }
-  Ok(())
 }

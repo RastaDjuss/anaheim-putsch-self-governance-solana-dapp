@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-anaheim = "CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou" # Program ID pour le programme anaheim
+anaheim = "CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou"
 journal = "7vtfmh5CTMaXyFFZWJm9TbPeRK8XJGB1n5rF9G5qFYhm"  # Program ID pour le programme journal
 
 [registry]
