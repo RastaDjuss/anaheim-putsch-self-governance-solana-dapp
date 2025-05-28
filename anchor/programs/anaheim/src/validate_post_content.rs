@@ -1,10 +1,13 @@
 pub const MAX_MESSAGE_LENGTH: usize = 256;
 
+/// Vérifie que `content` n'est pas vide et ne dépasse pas la longueur max.
+/// Retourne `Ok(())` ou une chaîne d'erreur statique.
 pub fn validate_post_content(content: &str) -> Result<(), &'static str> {
-  if content.trim().is_empty() {
+  let trimmed = content.trim();
+  if trimmed.is_empty() {
     return Err("Content is empty.");
   }
-  if content.len() > MAX_MESSAGE_LENGTH {
+  if trimmed.len() > MAX_MESSAGE_LENGTH {
     return Err("Content exceeds max allowable length.");
   }
   Ok(())
@@ -16,31 +19,32 @@ mod tests {
 
   #[test]
   fn test_empty_content() {
-    let result = validate_post_content("");
-    assert_eq!(result.unwrap_err(), "Content is empty.");
+    assert_eq!(validate_post_content(""), Err("Content is empty."));
+    assert_eq!(validate_post_content("   "), Err("Content is empty."));
   }
 
   #[test]
   fn test_content_too_long() {
-    let result = validate_post_content(&"a".repeat(MAX_MESSAGE_LENGTH + 1));
-    assert_eq!(result.unwrap_err(), "Content exceeds max allowable length.");
-  }
-
-  #[test]
-  fn test_valid_content() {
-    let result = validate_post_content("Valid post");
-    assert!(result.is_ok());
+    let too_long = "a".repeat(MAX_MESSAGE_LENGTH + 1);
+    assert_eq!(
+      validate_post_content(&too_long),
+      Err("Content exceeds max allowable length.")
+    );
   }
 
   #[test]
   fn test_content_max_length() {
-    let result = validate_post_content(&"a".repeat(MAX_MESSAGE_LENGTH));
-    assert!(result.is_ok());
+    let exact = "a".repeat(MAX_MESSAGE_LENGTH);
+    assert!(validate_post_content(&exact).is_ok());
+  }
+
+  #[test]
+  fn test_valid_content() {
+    assert!(validate_post_content("Hello, world!").is_ok());
   }
 
   #[test]
   fn test_special_chars() {
-    let result = validate_post_content("🚀✨💡");
-    assert!(result.is_ok());
+    assert!(validate_post_content("🚀✨💡").is_ok());
   }
 }
