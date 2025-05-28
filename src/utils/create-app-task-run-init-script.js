@@ -1,0 +1,123 @@
+import { log } from '@clack/prompts';
+import { join } from 'node:path';
+import { bold, yellow } from 'picocolors';
+import { ensureTargetPath } from './ensure-target-path';
+import { deleteInitScript, getInitScript } from './get-init-script';
+import { searchAndReplace } from './search-and-replace';
+import { validateAnchorVersion, validateSolanaVersion } from './validate-version';
+import { taskFail } from './vendor/clack-tasks';
+import { namesValues } from './vendor/names';
+export function createAppTaskRunInitScript(args) {
+    return {
+        enabled: !args.skipInit,
+        title: 'Running init script',
+        task: async (result) => {
+            try {
+                const init = getInitScript(args.targetDirectory);
+                if (!init) {
+                    return result({ message: 'Repository does not have an init script' });
+                }
+                if (args.verbose) {
+                    log.warn(`Running init script`);
+                }
+                await initCheckVersion(init);
+                if (args.verbose) {
+                    log.warn(`initCheckVersion done`);
+                }
+                await initRename(args, init, args.verbose);
+                if (args.verbose) {
+                    log.warn(`initRename done`);
+                }
+                const instructions = (initInstructions(init) ?? [])
+                    ?.filter(Boolean)
+                    .map((msg) => msg.replace('{pm}', args.packageManager));
+                if (args.verbose) {
+                    log.warn(`initInstructions done`);
+                }
+                deleteInitScript(args.targetDirectory);
+                if (args.verbose) {
+                    log.warn(`deleteInitScript done`);
+                }
+                return result({ message: 'Executed init script', instructions });
+            }
+            catch (error) {
+                taskFail(`init: Error running init script: ${error}`);
+            }
+        },
+    };
+}
+async function initRename(args, init, verbose) {
+    // Rename template to project name throughout the whole project
+    await searchAndReplace(args.targetDirectory, [`template-${args.template.name}`, args.template.name], [args.name, args.name], false, verbose);
+    // Return early if there are no renames defined in the init script
+    if (!init?.rename) {
+        return;
+    }
+    // Loop through each word in the rename object
+    for (const from of Object.keys(init.rename)) {
+        // Get the 'to' property from the rename object
+        const to = init.rename[from].to.replace('{{name}}', args.name.replace(/-/g, ''));
+        // Get the name matrix for the 'from' and the 'to' value
+        const fromNames = namesValues(from);
+        const toNames = namesValues(to);
+        for (const path of init.rename[from].paths) {
+            const targetPath = join(args.targetDirectory, path);
+            if (!(await ensureTargetPath(targetPath))) {
+                console.error(`init-script.rename: target does not exist ${targetPath}`);
+                continue;
+            }
+            await searchAndReplace(join(args.targetDirectory, path), fromNames, toNames, args.dryRun);
+        }
+    }
+}
+async function initCheckVersion(init) {
+    if (init?.versions?.anchor) {
+        await initCheckVersionAnchor(init.versions.anchor);
+    }
+    if (init?.versions?.solana) {
+        await initCheckVersionSolana(init.versions.solana);
+    }
+}
+async function initCheckVersionAnchor(requiredVersion) {
+    try {
+        const { required, valid, version } = validateAnchorVersion(requiredVersion);
+        if (!version) {
+            log.warn([
+                bold(yellow(`Could not find Anchor version. Please install Anchor.`)),
+                'https://www.anchor-lang.com/docs/installation',
+            ].join(' '));
+        }
+        else if (!valid) {
+            log.warn([
+                yellow(`Found Anchor version ${version}. Expected Anchor version ${required}.`),
+                'https://www.anchor-lang.com/release-notes/0.30.1',
+            ].join(' '));
+        }
+    }
+    catch (error_) {
+        log.warn(`Error ${error_}`);
+    }
+}
+async function initCheckVersionSolana(requiredVersion) {
+    try {
+        const { required, valid, version } = validateSolanaVersion(requiredVersion);
+        if (!version) {
+            log.warn([
+                bold(yellow(`Could not find Solana version. Please install Solana.`)),
+                'https://docs.solana.com/cli/install-solana-cli-tools',
+            ].join(' '));
+        }
+        else if (!valid) {
+            log.warn([
+                yellow(`Found Solana version ${version}. Expected Solana version ${required}.`),
+                'https://docs.solana.com/cli/install-solana-cli-tools',
+            ].join(' '));
+        }
+    }
+    catch (error_) {
+        log.warn(`Error ${error_}`);
+    }
+}
+function initInstructions(init) {
+    return init?.instructions?.length === 0 ? [] : init?.instructions;
+}

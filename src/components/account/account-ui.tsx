@@ -52,7 +52,7 @@ export function AccountBalanceCheck({ address }: { address: Address }) {
     return (
       <AppAlert
         action={
-          <Button variant="outline" onClick={() => mutation.mutateAsync(1).catch((err) => console.log(err))}>
+          <Button variant="outline" onClick={() => mutation.mutateAsync(1).catch((error_) => console.log(error_))}>
             Request Airdrop
           </Button>
         }
@@ -270,7 +270,7 @@ function ModalAirdrop({ address }: { address: Address }) {
       title="Airdrop"
       submitDisabled={!amount || mutation.isPending}
       submitLabel="Request Airdrop"
-      submit={() => mutation.mutateAsync(parseFloat(amount))}
+      submit={() => mutation.mutateAsync(Number.parseFloat(amount))}
     >
       <Label htmlFor="amount">Amount</Label>
       <Input
@@ -304,7 +304,7 @@ function ModalSend(props: { address: Address; account: UiWalletAccount }) {
       submit={() => {
         mutation.mutateAsync({
           destination: address(destination),
-          amount: parseFloat(amount),
+          amount: Number.parseFloat(amount),
         })
       }}
     >
