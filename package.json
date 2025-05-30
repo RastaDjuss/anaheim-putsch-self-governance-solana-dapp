@@ -49,7 +49,7 @@
     "@coral-xyz/anchor": "^0.31.1",
     "@types/jest": "^29.5.14",
     "@types/mock-fs": "^4.13.4",
-    "@types/node": "^22.15.23",
+    "@types/node": "^22.15.24",
     "@types/semver": "^7.7.0",
     "@vitest/coverage-v8": "^3.1.4",
     "automd": "^0.3.12",
@@ -60,17 +60,19 @@
     "prettier": "^3.5.3",
     "regenerator-runtime": "^0.14.1",
     "ts-jest": "29.3.4",
-    "typescript": "^5.2.2",
+    "typescript": "^5.8.3",
     "unbuild": "^3.5.0",
     "vitest": "^3.1.4"
   },
   "packageManager": "pnpm@10.11.0",
   "dependencies": {
     "@clack/prompts": "^0.7.0",
+    "@project-serum/anchor": "^0.26.0",
     "@solana/web3.js": "^1.98.2",
     "commander": "^13.1.0",
     "core-js": "^3.42.0",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
     "fr": "^1.2.2",
     "giget": "^1.2.5",
     "picocolors": "^1.1.1",
@@ -79,7 +81,7 @@
     "semver": "^7.7.2",
     "typedef": "^1.1.0",
     "up": "^1.0.2",
-    "zod": "^3.25.30"
+    "zod": "^3.25.33"
   },
   "contributors": [
     {

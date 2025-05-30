@@ -1,31 +1,24 @@
+// === FILE: programs/anaheim/src/instructions/create_user.rs ===
 use anchor_lang::prelude::*;
-use crate::state::UserAccount;
-use crate::constants::MAX_USERNAME_LENGTH;
-use crate::ErrorCode;
+use crate::error::ErrorCode;
+use crate::state::user_account::UserAccount;
 
 #[derive(Accounts)]
 pub struct CreateUser<'info> {
-  #[account(init, payer = authority, space = 8 + UserAccount::SIZE)]
-  pub user_account: Account<'info, UserAccount>, // Compte utilisateur
+  #[account(init, payer = user, space = UserAccount::SIZE)]
+  pub user_account: Account<'info, UserAccount>,
   #[account(mut)]
-  pub authority: Signer<'info>, // Utilisateur qui paiera les frais
-  pub system_program: Program<'info, System>, // Programme système Solana
+  pub user: Signer<'info>,
+  pub system_program: Program<'info, System>,
 }
 
 pub fn create_user(ctx: Context<CreateUser>, username: String) -> Result<()> {
-  let trimmed_username = username.trim();
-
-  if trimmed_username.is_empty() {
-    return err!(ErrorCode::InvalidContent);
+  if username.trim().is_empty() || username.len() > 32 {
+    return Err(ErrorCode::InvalidContent.into());
   }
-
-  if trimmed_username.len() > MAX_USERNAME_LENGTH {
-    return err!(ErrorCode::UsernameTooLong);
-  }
-
-  let user_account = &mut ctx.accounts.user_account;
-  user_account.name = trimmed_username.to_string();
-  user_account.user_authority = *ctx.accounts.authority.key;
-
+  let account = &mut ctx.accounts.user_account;
+  account.username = username;
+  account.authority = *ctx.accounts.user.key;
+  account.timestamp = Clock::get()?.unix_timestamp;
   Ok(())
 }

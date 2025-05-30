@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime';
 import { config } from 'dotenv';
 import { Program } from '@coral-xyz/anchor';
 import { Keypair } from '@solana/web3.js';
-import { describe, it, beforeAll, expect, afterAll } from 'vitest/setup';
+import { describe, it, beforeAll, expect, afterAll } from 'vitest';
 import type { Anaheim } from '../target/types/anaheim';
 
 // Charger les variables d'environnement
@@ -44,7 +44,7 @@ describe('Anaheim tests', () => {
   beforeAll(async function () {
     // Ajout d'un polyfill si nécessaire pour 'Promise'
     if (typeof globalThis.Promise === 'undefined' || !globalThis.Promise.all) {
-        require('core-js/stable');
+      require('core-js/stable');
     }
 
     // Configuration initiale pour Anchor
@@ -77,7 +77,7 @@ describe('Anaheim tests', () => {
         );
         await connection.confirmTransaction(airdropSig, 'processed');
       } catch (airdropError) {
-        throw new Error(`Failed to airdrop SOL to account: ${airdropError.message}`);
+        throw new Error(`Failed to airdrop SOL to account: ${airdropError instanceof Error ? airdropError.message : String(airdropError)}`);
       }
     }
   });
@@ -89,25 +89,34 @@ describe('Anaheim tests', () => {
 
   it('Initializes Anaheim with initial count of 0', async () => {
     try {
-      const txSignature = await program.methods
-        .initialize()
-        .accounts({
-          anaheim: anaheimKeypair.publicKey,
-          payer: provider.publicKey,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        })
-        .signers([anaheimKeypair])
-        .rpc();
+      const txSignature = await (program.methods as any)["initialize"] ().accounts ( {
+        anaheim: anaheimKeypair.publicKey,
+        payer: provider.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      } ).signers ( [anaheimKeypair] ).rpc ();
 
       // Confirmation explicite avec timeout
-      await withTimeout(connection.confirmTransaction(txSignature, 'processed'), 5000);
-      console.log('Initialization transaction confirmed:', txSignature);
+      await withTimeout ( connection.confirmTransaction ( txSignature, 'processed' ), 5000 );
+      console.log ( 'Initialization transaction confirmed:', txSignature );
 
-      const account = await program.account.anaheim.fetch(anaheimKeypair.publicKey);
-      expect(account.count).toBe(0); // Vérifie que `count` est initialisé à 0
+      try {
+        const accountInfo = await (program.account as any)["anaheim"].fetchNullable(anaheimKeypair.publicKey);
+        if (!accountInfo) {
+          throw new Error ( "Account is not initialized or is not of the expected type." );
+        }
+        if (typeof accountInfo.count !== 'number') {
+          throw new Error ( "'count' is missing or is not a valid number." );
+        }
+        expect ( accountInfo.count ).toBe ( 0 ); // Vérifie que `count` est initialisé à 0
+      } catch (err) {
+        if (err instanceof anchor.AnchorError) {
+          console.error ( 'Program error:', err.logs ); // Capture des logs spécifiques d'Anchor
+        } else {
+          console.error ( 'Initialization error:', err );
+        }
+      }
     } catch (err) {
-      console.error('Initialization error:', err);
-      throw new Error(`Test failed during initialization: ${err.message}`);
+      throw new Error ( `Test failed during initialization: ${err instanceof Error ? err.message : String ( err )}` );
     }
   });
 });

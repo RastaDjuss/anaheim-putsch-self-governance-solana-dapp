@@ -1,5 +1,17 @@
-pub mod create_user; // L'instruction pour créer un utilisateur
-pub mod create_post; // L'instruction pour créer un post
+// === instructions/mod.rs ===
+pub mod create_post;
+pub mod close_post;
+pub use close_post::*;
 
-pub use create_user::*; // Rend leurs types disponibles
-pub use create_post::*; // de manière explicite
+// === instructions/create_post.rs ===
+use anchor_lang::prelude::*;
+use crate::state::PostAccount;
+
+#[derive(Accounts)]
+pub struct CreatePost<'info> {
+  #[account(init, payer = user, space = PostAccount::LEN)]
+  pub post: Account<'info, PostAccount>,
+  #[account(mut)]
+  pub user: Signer<'info>,
+  pub system_program: Program<'info, System>,
+}

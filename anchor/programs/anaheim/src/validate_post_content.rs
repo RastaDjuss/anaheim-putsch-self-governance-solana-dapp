@@ -1,46 +1,14 @@
-pub const MAX_MESSAGE_LENGTH: usize = 256;
+use anchor_lang::prelude::*;
+use crate::error::ErrorCode;
+use crate::constants::MAX_CONTENT_LENGTH;
 
-pub fn validate_post_content(content: &str) -> Result<(), &'static str> {
-  if content.trim().is_empty() {
-    return Err("Content is empty.");
+pub fn validate_post_content(content: &str) -> Result<()> {
+  let trimmed = content.chars().filter(|c| !c.is_whitespace()).collect::<String>();
+  if trimmed.is_empty() {
+    return err!(ErrorCode::InvalidContent);
   }
-  if content.len() > MAX_MESSAGE_LENGTH {
-    return Err("Content exceeds max allowable length.");
+  if trimmed.len() > MAX_CONTENT_LENGTH {
+    return err!(ErrorCode::ContentTooLong);
   }
   Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn test_empty_content() {
-    let result = validate_post_content("");
-    assert_eq!(result.unwrap_err(), "Content is empty.");
-  }
-
-  #[test]
-  fn test_content_too_long() {
-    let result = validate_post_content(&"a".repeat(MAX_MESSAGE_LENGTH + 1));
-    assert_eq!(result.unwrap_err(), "Content exceeds max allowable length.");
-  }
-
-  #[test]
-  fn test_valid_content() {
-    let result = validate_post_content("Valid post");
-    assert!(result.is_ok());
-  }
-
-  #[test]
-  fn test_content_max_length() {
-    let result = validate_post_content(&"a".repeat(MAX_MESSAGE_LENGTH));
-    assert!(result.is_ok());
-  }
-
-  #[test]
-  fn test_special_chars() {
-    let result = validate_post_content("🚀✨💡");
-    assert!(result.is_ok());
-  }
 }

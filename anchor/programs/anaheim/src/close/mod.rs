@@ -1,3 +1,5 @@
-pub mod close; // Rend le module instructions accessible
-// Assurez-vous qu’un fichier `instructions.rs` existe dans le même dossier que ce fichier,
-// ou qu’un dossier nommé `instructions` avec un fichier `mod.rs` est disponible.
+pub mod close_post;
+pub use close_post::{ClosePost, close_post};
+
+pub mod close_user;
+pub use close_user::{CloseUser, close_user};

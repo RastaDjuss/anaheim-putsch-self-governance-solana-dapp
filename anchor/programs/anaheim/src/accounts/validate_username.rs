@@ -1,8 +1,21 @@
+use anchor_lang::prelude::*;
+use crate::error::ErrorCode;
+
+pub fn validate_username(username: &str) -> Result<()> {
+  let trimmed = username.trim();
+  if trimmed.is_empty() {
+    return Err(ErrorCode::InvalidUsername.into());
+  }
+  if trimmed.len() > 32 {
+    return Err(ErrorCode::UsernameTooLong.into());
+  }
+  Ok(())
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::error_code::{ErrorCode};
-  use crate::validate_username;
+
   #[test]
   fn test_valid_username() {
     assert!(validate_username("Alice").is_ok());
@@ -12,12 +25,8 @@ mod tests {
   fn test_empty_username() {
     assert_eq!(
       validate_username("   ").unwrap_err(),
-      InvalidUsername.into()
+      ErrorCode::InvalidUsername.into()
     );
-  }
-
-  fn validate_username(p0: &str) -> _ {
-    todo!()
   }
 
   #[test]

@@ -1,0 +1,125 @@
+{
+  "address": "4AA4DXtAGzqE8amYejiALw4R4idRwSkXgwXbm3Dw9Kjt",
+  "metadata": {
+    "name": "anaheim",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Solan Governance Dapp and social media for powerr to the people nextjs, react, typescript and anchor used"
+  },
+  "instructions": [
+    {
+      "name": "close_post",
+      "discriminator": [
+        131,
+        190,
+        34,
+        94,
+        190,
+        71,
+        183,
+        81
+      ],
+      "accounts": [
+        {
+          "name": "post",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_post",
+      "discriminator": [
+        123,
+        92,
+        184,
+        29,
+        231,
+        24,
+        15,
+        202
+      ],
+      "accounts": [
+        {
+          "name": "post",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "PostAccount",
+      "discriminator": [
+        85,
+        236,
+        139,
+        84,
+        240,
+        243,
+        196,
+        23
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidContent",
+      "msg": "The provided content is invalid or empty."
+    },
+    {
+      "code": 6001,
+      "name": "ContentTooLong",
+      "msg": "The content length exceeds the maximum allowed."
+    },
+    {
+      "code": 6002,
+      "name": "UsernameTooLong",
+      "msg": "The username length exceeds the maximum allowed."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidUsername",
+      "msg": "Username is invalid."
+    }
+  ],
+  "types": [
+    {
+      "name": "PostAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "author",
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

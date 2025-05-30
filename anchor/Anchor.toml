@@ -13,7 +13,7 @@ journal = "7vtfmh5CTMaXyFFZWJm9TbPeRK8XJGB1n5rF9G5qFYhm"  # Program ID pour le p
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"                              # Cluster local pour les tests
+cluster = "devnet"                              # Cluster local pour les tests
 wallet = "~/.config/solana/id.json"              # Fichier de portefeuille utilisé pour signer les transactions
 
 [scripts]

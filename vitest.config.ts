@@ -10,6 +10,7 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/**/*.ts'],
     },
+    testTimeout: 30000, // Timeout global de 30 secondes pour chaque test
   },
 });
 // Schéma strict

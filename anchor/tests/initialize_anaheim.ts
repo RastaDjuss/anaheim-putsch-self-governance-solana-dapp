@@ -1,0 +1,122 @@
+import * as anchor from '@coral-xyz/anchor';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import { config } from 'dotenv';
+import { Program } from '@coral-xyz/anchor';
+import { Keypair } from '@solana/web3.js';
+import { describe, it, beforeAll, expect, afterAll } from 'vitest';
+import type { Anaheim } from '../target/types/anaheim';
+
+// Charger les variables d'environnement
+config();
+
+/**
+ * Fonction `withTimeout` : Exécute une promesse avec un délai maximum.
+ * Si la promesse ne se résout pas dans le délai imparti, une erreur de timeout est levée.
+ *
+ * @param promise - La promesse à surveiller.
+ * @param timeout - Durée maximale (en ms) pour la résolution de la promesse.
+ * @param promiseConstructor - Optionnel : Constructeur de promesses (par défaut, globalThis.Promise).
+ * @returns Une promesse qui se résout ou échoue selon le délai imparti.
+ */
+async function withTimeout<T>(
+  promise: Promise<T>,
+  timeout: number,
+  promiseConstructor: PromiseConstructor = globalThis.Promise
+): Promise<T> {
+  const timeoutPromise = new promiseConstructor<T>((_, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error('Operation timed out'));
+      clearTimeout(timer);
+    }, timeout);
+  });
+
+  return promiseConstructor.race([promise, timeoutPromise]);
+}
+
+describe('Anaheim tests', () => {
+  // Initialisation des variables globales pour tous les tests
+  let provider: anchor.AnchorProvider;
+  let program: Program<Anaheim>;
+  let anaheimKeypair: Keypair;
+  let connection: anchor.web3.Connection;
+
+  beforeAll(async function () {
+    // Ajout d'un polyfill si nécessaire pour 'Promise'
+    if (typeof globalThis.Promise === 'undefined' || !globalThis.Promise.all) {
+        require('core-js/stable');
+    }
+
+    // Configuration initiale pour Anchor
+    provider = anchor.AnchorProvider.env();
+    anchor.setProvider(provider);
+    connection = provider.connection;
+
+    // Vérification de la connexion RPC
+    try {
+      const version = await connection.getVersion();
+      console.log('Connected to Solana cluster:', version);
+    } catch (err) {
+      throw new Error(
+        'Unable to connect to Solana RPC cluster. Ensure RPC is up and running.'
+      );
+    }
+
+    // Initialisation du programme Anchor et de la paire de clés
+    program = anchor.workspace.Anaheim as Program<Anaheim>;
+    anaheimKeypair = Keypair.generate();
+
+    // Vérification si le compte existe et provisionnement si nécessaire
+    const accountExists = !!(await connection.getAccountInfo(anaheimKeypair.publicKey));
+    if (!accountExists) {
+      console.log('Account not found; creating and funding it.');
+      try {
+        const airdropSig = await connection.requestAirdrop(
+          anaheimKeypair.publicKey,
+          anchor.web3.LAMPORTS_PER_SOL
+        );
+        await connection.confirmTransaction(airdropSig, 'processed');
+      } catch (airdropError) {
+        throw new Error(`Failed to airdrop SOL to account: ${airdropError instanceof Error ? airdropError.message : String(airdropError)}`);
+      }
+    }
+  });
+
+  afterAll(async () => {
+    console.log('Cleaning up test resources...');
+    // Ajoutez toute logique de nettoyage ici si nécessaire
+  });
+
+  it('Initializes Anaheim with initial count of 0', async () => {
+    try {
+      const txSignature = await (program.methods as any)["initialize"] ().accounts ( {
+        anaheim: anaheimKeypair.publicKey,
+        payer: provider.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId,
+      } ).signers ( [anaheimKeypair] ).rpc ();
+
+      // Confirmation explicite avec timeout
+      await withTimeout ( connection.confirmTransaction ( txSignature, 'processed' ), 5000 );
+      console.log ( 'Initialization transaction confirmed:', txSignature );
+
+      try {
+        const accountInfo = await (program.account as any)["anaheim"].fetchNullable(anaheimKeypair.publicKey);
+        if (!accountInfo) {
+          throw new Error ( "Account is not initialized or is not of the expected type." );
+        }
+        if (typeof accountInfo.count !== 'number') {
+          throw new Error ( "'count' is missing or is not a valid number." );
+        }
+        expect ( accountInfo.count ).toBe ( 0 ); // Vérifie que `count` est initialisé à 0
+      } catch (err) {
+        if (err instanceof anchor.AnchorError) {
+          console.error ( 'Program error:', err.logs ); // Capture des logs spécifiques d'Anchor
+        } else {
+          console.error ( 'Initialization error:', err );
+        }
+      }
+    } catch (err) {
+      throw new Error ( `Test failed during initialization: ${err instanceof Error ? err.message : String ( err )}` );
+    }
+  });
+});

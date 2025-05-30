@@ -1,44 +1,30 @@
+// === FILE: programs/anaheim/src/handlers/handlers.rs ===
 use anchor_lang::prelude::*;
-use crate::state::{UserAccount};
-use crate::constants::MAX_CONTENT_LENGTH;
+use crate::error::ErrorCode;
+use crate::instructions::{create_user::CreateUser, create_post::CreatePost};
 
-// Erreurs personnalisées
-#[error_code]
-pub enum ErrorCode {
-  #[msg("The provided username is too long.")]
-  UsernameTooLong,
-  #[msg("Invalid username.")]
-  InvalidUsername,
-  #[msg("Content exceeds max allowable length.")]
-  ContentTooLong,
-}
-
-// Gestionnairpub username: ()e d'exemple pour créer un utilisateur
 pub fn create_user(ctx: Context<CreateUser>, username: String) -> Result<()> {
-  let trimmed_username = username.trim();
-
-  // Validation du pseudo
-  if trimmed_username.is_empty() {
-    return Err(ErrorCode::InvalidUsername.into());
+  if username.len() > 32 {
+    return Err(ErrorCode::InvalidContent.into());
   }
-  if trimmed_username.len() > MAX_CONTENT_LENGTH {
-    return Err(ErrorCode::UsernameTooLong.into());
-  }
-
-  // Mise à jour du compte utilisateur
   let user_account = &mut ctx.accounts.user_account;
-  user_account.owner = *ctx.accounts.authority.key;
-  user_account.username = trimmed_username.to_string();
+  user_account.username = username.clone();
+  user_account.authority = *ctx.accounts.user.key;
+  user_account.timestamp = Clock::get()?.unix_timestamp;
 
+  msg!("User created: {}", user_account.username);
   Ok(())
 }
 
-// Contexte pour créer un utilisateur
-#[derive(Accounts)]
-pub struct CreateUser<'info> {
-  #[account(init, payer = authority, space = UserAccount::SIZE)]
-  pub user_account: Account<'info, UserAccount>,
-  #[account(mut)]
-  pub authority: Signer<'info>,
-  pub system_program: Program<'info, System>,
+pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
+  if content.len() > 280 {
+    return Err(ErrorCode::InvalidContent.into());
+  }
+  let post_account = &mut ctx.accounts.post_account;
+  post_account.content = content.clone();
+  post_account.author = *ctx.accounts.user.key;
+  post_account.created_at = Clock::get()?.unix_timestamp;
+
+  msg!("Post created: {}", post_account.content);
+  Ok(())
 }
