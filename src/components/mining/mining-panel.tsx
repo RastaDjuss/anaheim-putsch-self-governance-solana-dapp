@@ -1,59 +1,51 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import formatDistance from 'date-fns/formatDistance';
 import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
 import add from 'date-fns/add';
 import { fr } from 'date-fns/locale';
 
-// 💰 FAUX PORTEFEUILLE POUR TEST LOCAL
-const MOCK_WALLET_ADDRESS = "CHAOTIC-FAKE-WALLET-ADDRESS";
-
-function claimReward(): Promise<number> {
+// Récompense simulée (remplacera plus tard une vraie interaction on-chain)
+function claimReward(walletAddress: string): Promise<number> {
   return new Promise((resolve) => {
     const simulatedAmount = 0.357;
     setTimeout(() => {
-      console.log("Récompense envoyée à :", MOCK_WALLET_ADDRESS);
+      console.log('Récompense envoyée à :', walletAddress);
       resolve(simulatedAmount);
     }, 500);
   });
 }
 
-// Variables constantes
 const LAST_CLAIM_KEY = 'last-claim-timestamp';
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
-// Vérifie si une date est valide
 function isValidDate(date: unknown): date is Date {
   return date instanceof Date && !isNaN(date.getTime());
 }
 
-// Composant principal
 export default function MiningPanel() {
+  const { publicKey, connected } = useWallet();
+
   const [lastClaim, setLastClaim] = useState<Date | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const [canClaim, setCanClaim] = useState(false);
-  const [rewardAmount, setRewardAmount] = useState<number | null>(null); // ✅ ICI
+  const [rewardAmount, setRewardAmount] = useState<number | null>(null);
 
-  // Met à jour l'heure actuelle toutes les secondes
   useEffect(() => {
-    if (typeof globalThis === 'undefined') return;
-
     const interval = setInterval(() => setNow(Date.now()), 1000);
 
     try {
       const stored = localStorage.getItem(LAST_CLAIM_KEY);
       if (stored) {
         const date = new Date(stored);
-        if (isValidDate(date)) {
-          setLastClaim(date);
-        } else {
-          localStorage.removeItem(LAST_CLAIM_KEY);
-        }
+        if (isValidDate(date)) setLastClaim(date);
+        else localStorage.removeItem(LAST_CLAIM_KEY);
       }
-    } catch (error_) {
-      console.error('Erreur lors du chargement de localStorage', error_);
+    } catch (e) {
+      console.error('Erreur avec localStorage', e);
     } finally {
       setIsInitialized(true);
     }
@@ -70,49 +62,38 @@ export default function MiningPanel() {
   }, [lastClaim, now]);
 
   useEffect(() => {
-    if (lastClaim) {
-      localStorage.setItem(LAST_CLAIM_KEY, lastClaim.toISOString());
-    }
+    if (lastClaim) localStorage.setItem(LAST_CLAIM_KEY, lastClaim.toISOString());
   }, [lastClaim]);
 
   const displayText = useMemo(() => {
-    if (!isInitialized) return 'Chargement des informations...';
-    if (!lastClaim) return 'Pas encore de minage disponible';
+    if (!connected) return 'Connecte ton portefeuille pour miner';
+    if (!isInitialized) return 'Chargement...';
+    if (!lastClaim) return 'Pas encore de minage effectué';
     return `Dernier minage : ${formatDistanceToNowStrict(lastClaim, { locale: fr })}`;
-  }, [isInitialized, lastClaim]);
+  }, [isInitialized, lastClaim, connected]);
 
   const nextClaimIn = useMemo(() => {
     if (!lastClaim || canClaim) return null;
-
-    try {
-      const nextClaimDate = add(lastClaim, { days: 1 });
-      return formatDistance(new Date(), nextClaimDate, { addSuffix: true, locale: fr });
-    } catch (error) {
-      console.error('Erreur lors du calcul de la prochaine réclamation', error);
-      return null;
-    }
+    const nextClaimDate = add(lastClaim, { days: 1 });
+    return formatDistance(new Date(), nextClaimDate, { addSuffix: true, locale: fr });
   }, [lastClaim, canClaim]);
 
   const progress = useMemo(() => {
     if (!lastClaim) return 100;
     const elapsed = now - lastClaim.getTime();
     return Math.min(100, Math.round((elapsed / ONE_DAY_MS) * 100));
-  }, [lastClaim, Math.floor(now / 1000)]);
+  }, [lastClaim, now]);
 
   const handleClaim = async () => {
-    if (canClaim) {
-      const amount = await claimReward();
-      setRewardAmount(amount);
-      setLastClaim(new Date());
-    }
+    if (!publicKey) return;
+    if (!canClaim) return;
+    const amount = await claimReward(publicKey.toBase58());
+    setRewardAmount(amount);
+    setLastClaim(new Date());
   };
 
   return (
-    <div
-      className="p-4 border rounded-xl bg-gray-900 text-white space-y-3 max-w-sm mx-auto"
-      aria-live="polite"
-      role="status"
-    >
+    <div className="p-4 border rounded-xl bg-gray-900 text-white space-y-3 max-w-sm mx-auto">
       <h2 className="text-xl font-bold">Panneau de Minage</h2>
 
       {rewardAmount !== null && (
@@ -138,14 +119,12 @@ export default function MiningPanel() {
 
       <button
         className={`w-full px-4 py-2 rounded font-semibold transition-all ${
-          canClaim ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 cursor-not-allowed'
+          connected && canClaim ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-600 cursor-not-allowed'
         }`}
         onClick={handleClaim}
-        disabled={!canClaim}
-        aria-disabled={!canClaim}
-        aria-label={canClaim ? 'Réclamer une récompense' : 'Réclamation indisponible, réessayez plus tard'}
+        disabled={!connected || !canClaim}
       >
-        {canClaim ? 'Réclamer' : 'Reviens plus tard'}
+        {connected ? (canClaim ? 'Réclamer' : 'Reviens plus tard') : 'Connecte ton wallet'}
       </button>
     </div>
   );

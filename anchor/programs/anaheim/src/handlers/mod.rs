@@ -1,8 +1,6 @@
 // === handlers/mod.rs ===
 pub mod create_post;
 pub mod close_post;
-
-pub use create_post::*;
 pub use close_post::*;
 
 // === handlers/create_post.rs ===

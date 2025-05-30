@@ -1,5 +1,5 @@
 {
-  "address": "4AA4DXtAGzqE8amYejiALw4R4idRwSkXgwXbm3Dw9Kjt",
+  "address": "25Pc4QmrWP7NJ339FFagnz3t8wZqRMU1dBUVTwTMW8o8",
   "metadata": {
     "name": "anaheim",
     "version": "0.1.0",
@@ -8,24 +8,24 @@
   },
   "instructions": [
     {
-      "name": "close_post",
+      "name": "close",
       "discriminator": [
-        131,
-        190,
-        34,
-        94,
-        190,
-        71,
-        183,
-        81
+        98,
+        165,
+        201,
+        177,
+        108,
+        65,
+        206,
+        96
       ],
       "accounts": [
         {
-          "name": "post",
+          "name": "anaheim",
           "writable": true
         },
         {
-          "name": "user",
+          "name": "payer",
           "writable": true,
           "signer": true
         }
@@ -46,7 +46,7 @@
       ],
       "accounts": [
         {
-          "name": "post",
+          "name": "post_account",
           "writable": true,
           "signer": true
         },
@@ -60,10 +60,123 @@
           "address": "11111111111111111111111111111111"
         }
       ],
+      "args": [
+        {
+          "name": "content",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "decrement",
+      "discriminator": [
+        106,
+        227,
+        168,
+        59,
+        248,
+        27,
+        150,
+        101
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true
+        }
+      ],
       "args": []
+    },
+    {
+      "name": "increment",
+      "discriminator": [
+        11,
+        18,
+        104,
+        9,
+        104,
+        174,
+        59,
+        33
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set",
+      "discriminator": [
+        198,
+        51,
+        53,
+        241,
+        116,
+        29,
+        126,
+        194
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "value",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
+    {
+      "name": "AnaheimAccount",
+      "discriminator": [
+        26,
+        253,
+        236,
+        239,
+        22,
+        181,
+        47,
+        158
+      ]
+    },
     {
       "name": "PostAccount",
       "discriminator": [
@@ -102,6 +215,18 @@
   ],
   "types": [
     {
+      "name": "AnaheimAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "PostAccount",
       "type": {
         "kind": "struct",
@@ -109,14 +234,6 @@
           {
             "name": "content",
             "type": "string"
-          },
-          {
-            "name": "author",
-            "type": "pubkey"
-          },
-          {
-            "name": "created_at",
-            "type": "i64"
           }
         ]
       }

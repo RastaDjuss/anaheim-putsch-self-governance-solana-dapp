@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/anaheim.json`.
  */
 export type Anaheim = {
-  "address": "",
+  "address": "CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou",
   "metadata": {
     "name": "anaheim",
     "version": "0.1.0",
@@ -14,24 +14,24 @@ export type Anaheim = {
   },
   "instructions": [
     {
-      "name": "closePost",
+      "name": "close",
       "discriminator": [
-        131,
-        190,
-        34,
-        94,
-        190,
-        71,
-        183,
-        81
+        98,
+        165,
+        201,
+        177,
+        108,
+        65,
+        206,
+        96
       ],
       "accounts": [
         {
-          "name": "post",
+          "name": "anaheim",
           "writable": true
         },
         {
-          "name": "user",
+          "name": "payer",
           "writable": true,
           "signer": true
         }
@@ -52,7 +52,7 @@ export type Anaheim = {
       ],
       "accounts": [
         {
-          "name": "post",
+          "name": "postAccount",
           "writable": true,
           "signer": true
         },
@@ -66,10 +66,123 @@ export type Anaheim = {
           "address": "11111111111111111111111111111111"
         }
       ],
+      "args": [
+        {
+          "name": "content",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "decrement",
+      "discriminator": [
+        106,
+        227,
+        168,
+        59,
+        248,
+        27,
+        150,
+        101
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true
+        }
+      ],
       "args": []
+    },
+    {
+      "name": "increment",
+      "discriminator": [
+        11,
+        18,
+        104,
+        9,
+        104,
+        174,
+        59,
+        33
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set",
+      "discriminator": [
+        198,
+        51,
+        53,
+        241,
+        116,
+        29,
+        126,
+        194
+      ],
+      "accounts": [
+        {
+          "name": "anaheim",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "value",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
+    {
+      "name": "anaheimAccount",
+      "discriminator": [
+        26,
+        253,
+        236,
+        239,
+        22,
+        181,
+        47,
+        158
+      ]
+    },
     {
       "name": "postAccount",
       "discriminator": [
@@ -108,6 +221,18 @@ export type Anaheim = {
   ],
   "types": [
     {
+      "name": "anaheimAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "postAccount",
       "type": {
         "kind": "struct",
@@ -115,14 +240,6 @@ export type Anaheim = {
           {
             "name": "content",
             "type": "string"
-          },
-          {
-            "name": "author",
-            "type": "pubkey"
-          },
-          {
-            "name": "createdAt",
-            "type": "i64"
           }
         ]
       }
