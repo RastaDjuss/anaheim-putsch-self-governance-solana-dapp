@@ -3,6 +3,7 @@ pub mod handler;
 pub mod decrement_handler;
 pub(crate) mod increment;
 pub mod increment_handler;
+mod handle_increment;
 
 use crate::state::post_account::PostAccount;
 use anchor_lang::prelude::*;
@@ -19,7 +20,7 @@ pub struct CreatePost<'info> {
 }
 pub(crate) fn set(ctx: Context<Update>, value: u8) -> Result<()> {
   let anaheim_account = &mut ctx.accounts.anaheim;
-  anaheim_account.value = value;  // ASSIGNATION DIRECTE SUR LE CHAMP
+  anaheim_account.value = value as u64;  // ASSIGNATION DIRECTE SUR LE CHAMP
   Ok(())
 }
 

@@ -7,6 +7,7 @@ use anchor_lang::Discriminator;
 use anchor_lang::account;
 use anchor_lang::AnchorSerialize;
 use anchor_lang::prelude::borsh;
+pub use anaheim_account::Anaheim;
 
 #[account]
 pub struct AnaheimAccount {
