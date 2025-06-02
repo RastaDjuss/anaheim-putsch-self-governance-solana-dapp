@@ -20,10 +20,27 @@ pub struct PostAccount {
   pub content: String,
   pub author: Pubkey,
   pub timestamp: i64,
+  pub value: u8,
 }
 
 impl PostAccount {
   // discriminator (8) + string prefix (4) + max content (256) + pubkey (32) + timestamp (8)
   pub const SIZE: usize = 8 + 4 + MAX_CONTENT_LENGTH + 32 + 8;
+}
+#[account]
+pub struct Anaheim {
+  pub authority: Pubkey,
+  pub value: u8,
+  pub count: u64,
+  pub counter: u8, // <-- il te faut CE champ si tu veux le manipuler
+}
+
+impl Anaheim {
+  pub const INIT_SPACE: usize = 1;
+}
+
+#[account]
+pub struct AnaheimAccount {
+  pub count: u64,
 }
 

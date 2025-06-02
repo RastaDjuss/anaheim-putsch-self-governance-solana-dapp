@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
 use crate::state::post_account::PostAccount;
-
+use crate::close::ClosePost;
 #[derive(Accounts)]
-pub struct ClosePost<'info> {
+pub struct CloseAccount<'info> {
   #[account(mut, close = user)]
   pub post_account: Account<'info, PostAccount>,
   #[account(mut)]

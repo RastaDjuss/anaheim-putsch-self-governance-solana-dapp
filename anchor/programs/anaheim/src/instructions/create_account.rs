@@ -1,4 +1,3 @@
-// === FILE: programs/anaheim/src/instructions/create_account.rs ===
 use anchor_lang::prelude::*;
 use crate::state::user_account::UserAccount;
 use crate::error::ErrorCode;
@@ -22,15 +21,14 @@ pub struct CreateAccount<'info> {
   pub system_program: Program<'info, System>,
 }
 
-pub fn create_account(ctx: Context<CreateAccount>, name: String) -> Result<()> {
+pub(crate) fn handler(ctx: Context<CreateAccount>, name: String) -> Result<()> {
   if name.is_empty() || name.len() > MAX_USERNAME_LENGTH {
-    return Err(error!(ErrorCode::InvalidContent));
+    return Err(ErrorCode::InvalidUsername.into());
   }
 
-  let user_account = &mut ctx.accounts.user_account;
-  user_account.username = name;
-  user_account.authority = *ctx.accounts.signer.key;
-  user_account.timestamp = Clock::get()?.unix_timestamp;
-
+  let user = &mut ctx.accounts.user_account;
+  user.authority = ctx.accounts.signer.key();
+  user.username = name;
   Ok(())
 }
+

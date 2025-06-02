@@ -17,8 +17,17 @@ pub fn create_user(ctx: Context<CreateUser>, username: String) -> Result<()> {
     return Err(ErrorCode::InvalidContent.into());
   }
   let account = &mut ctx.accounts.user_account;
+
   account.username = username;
   account.authority = *ctx.accounts.user.key;
   account.timestamp = Clock::get()?.unix_timestamp;
   Ok(())
 }
+pub fn handler(_ctx: Context<CreateUser>, username: String) -> Result<()> {
+  msg!("Creating user with username: {}", username);
+
+  // Ici tu pourrais écrire sur la blockchain, créer un compte, valider, etc.
+
+  Ok(()) // <- retour nécessaire
+}
+

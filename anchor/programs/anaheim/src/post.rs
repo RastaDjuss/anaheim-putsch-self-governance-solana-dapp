@@ -1,6 +1,4 @@
 use anchor_lang::prelude::*;
-use anchor_lang::system_program::ID;
-/// Structure pour représenter un post
 #[account]
 pub struct Post {
   pub content: String,     // Contenu du post (max 256 caractères)
