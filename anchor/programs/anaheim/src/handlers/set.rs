@@ -1,8 +1,8 @@
 use anchor_lang::prelude::*;
 use crate::contexts::update::Update;
 
-pub fn handler(ctx: Context<Update>) -> Result<()> {
+pub fn handler(ctx: Context<Update>, value: u8) -> Result<()> {
   let anaheim = &mut ctx.accounts.anaheim;
-  anaheim.count = anaheim.count.checked_add(1).unwrap();
+  anaheim.count = value as u64;
   Ok(())
 }

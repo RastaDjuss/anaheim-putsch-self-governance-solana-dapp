@@ -24,8 +24,6 @@ pub struct PostAccount {
 impl PostAccount {
   pub const SIZE: usize = 8 + 4 + MAX_CONTENT_LENGTH + 32 + 8 + 1;
 }
-// src/state/anaheim_account.rs (si tu veux le garder dans un sous-module)
-use anchor_lang::prelude::*;
 
 #[account]
 pub struct Anaheim {

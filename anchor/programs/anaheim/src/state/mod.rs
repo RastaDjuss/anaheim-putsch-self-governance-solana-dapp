@@ -1,19 +1,10 @@
-use anchor_lang::AnchorDeserialize;
-pub mod anaheim_account;
-pub mod post_account;
+// ===================== state/mod.rs =====================
 pub mod user_account;
-use anchor_lang::prelude::Pubkey;
-use anchor_lang::Discriminator;
-use anchor_lang::account;
-use anchor_lang::AnchorSerialize;
-use anchor_lang::prelude::borsh;
-pub use anaheim_account::Anaheim;
-
-#[account]
-pub struct AnaheimAccount {
-  pub count: u64,
-}
-
-impl AnaheimAccount {
-  pub const SIZE: usize = 8 + 8; // 8 bytes discriminator + 8 bytes u64
-}
+pub mod post_account;
+pub use user_account::*;
+pub use post_account::*;
+pub mod user_vote_marker;
+pub mod state;
+pub mod anaheim;
+pub use user_vote_marker::*;
+pub use anaheim::*;

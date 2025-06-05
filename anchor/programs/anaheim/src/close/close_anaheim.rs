@@ -1,12 +1,15 @@
 use anchor_lang::prelude::*;
+use crate::state::anaheim::Anaheim;
 
 #[derive(Accounts)]
 pub struct CloseAnaheim<'info> {
-  #[account(mut, close = payer)]
-  pub anaheim: Account<'info, crate::state::anaheim_account::Anaheim>,
-
+  #[account(mut, close = authority)]
+  pub anaheim: Account<'info, Anaheim>,
   #[account(mut)]
-  pub payer: Signer<'info>,
-
-  pub system_program: Program<'info, System>,
+  pub authority: Signer<'info>,
+}
+pub fn handler(_ctx: Context<CloseAnaheim>) -> Result<()> {
+  msg!("Closing Anaheim account...");
+  // Any pre-close logic here
+  Ok(())
 }

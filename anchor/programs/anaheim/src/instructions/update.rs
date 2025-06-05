@@ -1,27 +1,30 @@
-// programs/anaheim/src/instructions/update.rs
-
 use anchor_lang::prelude::*;
-use crate::state::anaheim_account::Anaheim;
 
-#[derive(Accounts)]
-pub struct Update<'info> {
-  #[account(mut)]
-  pub anaheim: Account<'info, Anaheim>,
-  pub authority: Signer<'info>,
+use crate::close::close_anaheim::CloseAnaheim;
+use crate::contexts::update::Update;
+use crate::contexts::initialize::Initialize;
+use crate::handlers::initialize_handler;
+
+pub fn close(_ctx: Context<CloseAnaheim>) -> Result<()> {
+  Ok(())
 }
+
+pub fn decrement(ctx: Context<Update>) -> Result<()> {
+  ctx.accounts.anaheim.count = ctx.accounts.anaheim.count.checked_sub(1).unwrap();
+  Ok(())
+}
+
 pub fn increment(ctx: Context<Update>) -> Result<()> {
   ctx.accounts.anaheim.count = ctx.accounts.anaheim.count.checked_add(1).unwrap();
   Ok(())
 }
 
-pub fn decrement(ctx: Context<Update>) -> Result<()> {
-  ctx.accounts.anaheim.count = ctx.accounts.anaheim.count.checked_sub(1)
-    .ok_or(error!(crate::error::ErrorCode::Underflow))?;
-  Ok(())
+pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+  initialize_handler(ctx)
 }
+
 
 pub fn set(ctx: Context<Update>, value: u8) -> Result<()> {
   ctx.accounts.anaheim.count = value as u64;
   Ok(())
 }
-

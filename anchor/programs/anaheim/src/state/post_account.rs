@@ -2,13 +2,16 @@ use anchor_lang::prelude::*;
 
 #[account]
 pub struct PostAccount {
+  pub content: [u8; 280],
   pub author: Pubkey,
-  pub timestamp: i64,
-  pub content: String,
-  pub vote_count: u64,
+  pub created_at: i64,
+  pub vote_count: u64, // <-- Ajoute ce champ ici
 }
 
-#[account]
-pub struct UserVoteMarker {
-  pub voted: bool,
+impl PostAccount {
+  pub const SIZE: usize = 8 // Discriminator Anchor
+    + 280 // content: [u8; 280]
+    + 32 // author: Pubkey
+    + 8  // created_at: i64
+    + 8; // vote_count: u64
 }

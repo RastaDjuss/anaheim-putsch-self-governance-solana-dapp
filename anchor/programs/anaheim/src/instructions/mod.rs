@@ -1,22 +1,16 @@
 use anchor_lang::prelude::*;
-pub mod create_account;
+
+use crate::state::post_account::PostAccount; // <- IMPORT DIRECT
+pub mod vote_post;
+pub mod use_anaheim;
+pub mod update;
+pub mod decrement;
 pub mod create_post;
 pub mod create_user;
-pub mod initialize;
-pub(crate) mod vote_post;
-pub(crate) mod use_anaheim;
-mod update;
-mod decrement;
 
 use anchor_lang::system_program::System;
 use anchor_lang::Accounts;
 use anchor_lang::prelude::{Account, Program, Signer};
-use crate::state::post_account::PostAccount;
-pub use crate::close::CloseAnaheim;
-pub use crate::instructions::vote_post::*;
-
-pub use create_user::CreateUser;
-pub use initialize::Initialize;
 use crate::constants::MAX_CONTENT_LENGTH;
 
 #[derive(Accounts)]
@@ -26,9 +20,10 @@ pub struct CreatePost<'info> {
     payer = user,
     space = 8 + 4 + MAX_CONTENT_LENGTH + 64 + 8 + 4
   )]
-
   pub post: Account<'info, PostAccount>,
+
   #[account(mut)]
   pub user: Signer<'info>,
+
   pub system_program: Program<'info, System>,
 }

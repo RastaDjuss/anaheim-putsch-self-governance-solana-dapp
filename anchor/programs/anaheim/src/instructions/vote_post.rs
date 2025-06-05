@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
-use crate::error::ErrorCode;  // <- Import de l'enum d'erreur complet
-use crate::state::post_account::{PostAccount, UserVoteMarker};
+
+use crate::state::{PostAccount, UserVoteMarker};
+use crate::error::ErrorCode;
 
 #[derive(Accounts)]
 pub struct VotePost<'info> {
@@ -13,7 +14,7 @@ pub struct VotePost<'info> {
   #[account(
         init_if_needed,
         payer = user,
-        space = 8 + 32,
+        space = UserVoteMarker::SIZE,
         seeds = [b"vote", user.key().as_ref(), post.key().as_ref()],
         bump
   )]
@@ -24,8 +25,9 @@ pub struct VotePost<'info> {
 
 pub fn handler(ctx: Context<VotePost>, upvote: bool) -> Result<()> {
   let post = &mut ctx.accounts.post;
+  let vote_marker = &mut ctx.accounts.vote_marker;
 
-  require!(!ctx.accounts.vote_marker.voted, ErrorCode::AlreadyVoted);
+  require!(!vote_marker.has_voted, ErrorCode::AlreadyVoted);
 
   if upvote {
     post.vote_count += 1;
@@ -33,6 +35,6 @@ pub fn handler(ctx: Context<VotePost>, upvote: bool) -> Result<()> {
     post.vote_count = post.vote_count.saturating_sub(1);
   }
 
-  ctx.accounts.vote_marker.voted = true;
+  vote_marker.has_voted = true;
   Ok(())
 }

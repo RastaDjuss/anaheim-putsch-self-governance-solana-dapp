@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::contexts::Update;
+use crate::contexts::update::Update;
 
 pub fn decrement(ctx: Context<Update>) -> Result<()> {
   handle_decrement(ctx)

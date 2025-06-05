@@ -1,13 +1,13 @@
 use anchor_lang::prelude::*;
-use crate::instructions::Initialize;
+use crate::contexts::initialize::Initialize;
 
 pub fn initialize_handler(ctx: Context<Initialize>) -> Result<()> {
-  let anaheim = &mut ctx.accounts.anaheim;
-  anaheim.count = 0;
   msg!("Anaheim initialized");
-  Ok(())
-}
 
-pub(crate) fn handle_initialize(_p0: Context<Initialize>) -> Result<()> {
-  todo!()
+  let anaheim = &mut ctx.accounts.anaheim;
+  anaheim.authority = ctx.accounts.user.key();
+  anaheim.count = 0;
+  anaheim.value = 0;
+
+  Ok(())
 }
