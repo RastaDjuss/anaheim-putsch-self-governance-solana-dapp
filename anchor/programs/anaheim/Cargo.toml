@@ -5,8 +5,8 @@ description = "Solan Governance Dapp and social media for powerr to the people n
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib", "lib"]
 name = "anaheim"
+crate-type = ["cdylib", "lib"]
 
 [features]
 default = []

@@ -2,7 +2,10 @@
 use anchor_lang::prelude::*;
 
 use crate::error::ErrorCode;
-use crate::contexts::*;
+use crate::contexts::update::Update;
+use crate::CreateUser;
+use crate::contexts::initialize::Initialize;
+use crate::contexts::create_post::CreatePost;
 
 fn string_to_fixed<const N: usize>(s: &str) -> [u8; N] {
   let bytes = s.as_bytes();

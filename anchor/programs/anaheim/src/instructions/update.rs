@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::close::close_anaheim::CloseAnaheim;
 use crate::contexts::update::Update;
 use crate::contexts::initialize::Initialize;
-use crate::handlers::initialize_handler;
+use crate::handlers::initialize_handler::initialize_handler;
 
 pub fn close(_ctx: Context<CloseAnaheim>) -> Result<()> {
   Ok(())

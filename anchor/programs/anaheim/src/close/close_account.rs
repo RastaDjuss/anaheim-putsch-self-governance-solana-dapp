@@ -9,7 +9,3 @@ pub struct CloseAccount<'info> {
   pub user: Signer<'info>,
 }
 
-pub fn close_post(ctx: Context<CloseAccount>) -> Result<()> {
-  msg!("Closing post account: {:?}", ctx.accounts.post_account.content);
-  Ok(())
-}
