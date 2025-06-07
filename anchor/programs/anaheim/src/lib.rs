@@ -6,7 +6,8 @@ pub mod handlers;
 pub mod instructions;
 pub mod close;
 pub mod post;
-mod contexts;
+pub mod contexts;
+pub mod validate;
 
 pub use state::post_account;
 
