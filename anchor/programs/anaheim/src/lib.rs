@@ -44,9 +44,12 @@ pub mod anaheim {
   }
 
   pub fn create_post(_ctx: Context<CreatePost>, content: String) -> Result<()> {
+
     if content.len() > 280 {
       return err!(ErrorCode::ContentTooLong);
+
     }
+
     Ok(())
   }
 }
@@ -90,8 +93,9 @@ pub struct AnaheimAccount {
 
 #[account]
 pub struct PostAccount {
-  pub content: String,
+  pub content: [u8; 280], // ✅ Tableau fixe de bytes
 }
+
 
 #[error_code]
 pub enum ErrorCode {
