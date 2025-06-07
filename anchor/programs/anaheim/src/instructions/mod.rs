@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-=======
-// === instructions/mod.rs ===
-pub mod create_post;
-pub mod close_post;
-pub mod initialize;
-
 // === instructions/create_post.rs ===
->>>>>>> fix-contexts
 use anchor_lang::prelude::*;
 
 use crate::state::post_account::PostAccount; // <- IMPORT DIRECT
@@ -16,11 +8,22 @@ pub mod update;
 pub mod decrement;
 pub mod create_post;
 pub mod create_user;
-
+pub mod initialize;
 use anchor_lang::system_program::System;
 use anchor_lang::Accounts;
 use anchor_lang::prelude::{Account, Program, Signer};
 use crate::constants::MAX_CONTENT_LENGTH;
+
+#[account]
+pub struct Anaheim {
+  pub authority: Pubkey,
+  pub count: u64,
+  pub value: u8,
+}
+
+impl Anaheim {
+  pub const SIZE: usize = 8 + 32 + 8 + 1;
+}
 
 #[derive(Accounts)]
 pub struct CreatePost<'info> {

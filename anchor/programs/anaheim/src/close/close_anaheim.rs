@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
-use crate::state::anaheim::Anaheim;
+use crate::state::anaheim_account::AnaheimAccount;
 
 #[derive(Accounts)]
 pub struct CloseAnaheim<'info> {
   #[account(mut, close = authority)]
-  pub anaheim: Account<'info, Anaheim>,
+  pub anaheim: Account<'info, AnaheimAccount>,
   #[account(mut)]
   pub authority: Signer<'info>,
 }

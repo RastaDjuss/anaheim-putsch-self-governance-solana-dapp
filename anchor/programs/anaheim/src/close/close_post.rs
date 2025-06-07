@@ -16,8 +16,10 @@ pub fn close_post(ctx: Context<ClosePost>) -> Result<()> {
 
   // Tente de décoder en UTF-8 et nettoie les zéros terminaux
   let content_str = str::from_utf8(content_bytes)
-    .unwrap_or("<Invalid UTF-8>")
-    .trim_end_matches('\0');
+    .unwrap_or("Invalid UTF-8 content");
+
+  msg!("Closing post account with content: {}", content_str);
+
 
   msg!("Closing post account with content: {}", content_str);
 

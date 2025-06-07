@@ -1,11 +1,11 @@
 use anchor_lang::prelude::*;
 
-use crate::state::anaheim::Anaheim;
+use crate::state::anaheim_account::AnaheimAccount;
 
 #[derive(Accounts)]
 pub struct UseAnaheim<'info> {
   #[account(mut)]
-  pub anaheim: Account<'info, Anaheim>,
+  pub anaheim: Account<'info, AnaheimAccount>,
   pub user: Signer<'info>,
 }
 

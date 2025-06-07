@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_lang::system_program::ID;
+
 /// Structure pour représenter un post
 #[account]
 pub struct Post {

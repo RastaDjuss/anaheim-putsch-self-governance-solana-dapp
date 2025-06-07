@@ -5,14 +5,12 @@ pub mod state;
 pub mod handlers;
 pub mod instructions;
 pub mod post;
-pub mod validate;
 pub mod contexts;
 pub mod close;
+pub mod utils;
 
 pub use instructions::*; // exposes instruction structs
 
-use handlers::{handle_create_post, handle_close_post};
-use anchor_lang::prelude::*;
 
 declare_id!("CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou");
 
@@ -45,7 +43,7 @@ pub mod anaheim {
     Ok(())
   }
 
-  pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
+  pub fn create_post(_ctx: Context<CreatePost>, content: String) -> Result<()> {
     if content.len() > 280 {
       return err!(ErrorCode::ContentTooLong);
     }
@@ -87,8 +85,15 @@ pub struct CreatePost<'info> {
 
 #[account]
 pub struct AnaheimAccount {
+  pub authority: Pubkey,
   pub count: u64,
+  pub value: u8,
 }
+
+impl AnaheimAccount {
+  pub const SIZE: usize = 8 + 32 + 8 + 1;
+}
+
 
 #[account]
 pub struct PostAccount {

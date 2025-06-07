@@ -2,8 +2,8 @@
 use anchor_lang::prelude::*;
 
 use crate::error::ErrorCode;
-use crate::contexts::update::Update;
-use crate::CreateUser;
+use crate::contexts::update::UpdatePost;
+use crate::contexts::create_user::CreateUser;
 use crate::contexts::initialize::Initialize;
 use crate::contexts::create_post::CreatePost;
 
@@ -46,25 +46,25 @@ pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
   Ok(())
 }
 
-pub fn set_value(ctx: Context<Update>, value: u8) -> Result<()> {
+pub fn set_value(ctx: Context<UpdatePost>, value: u8) -> Result<()> {
   let anaheim_account = &mut ctx.accounts.anaheim;
   anaheim_account.value = value;
   Ok(())
 }
 
-pub fn increment(ctx: Context<Update>) -> Result<()> {
+pub fn increment(ctx: Context<UpdatePost>) -> Result<()> {
   let anaheim = &mut ctx.accounts.anaheim;
   anaheim.count = anaheim.count.checked_add(1).ok_or(ErrorCode::Overflow)?;
   Ok(())
 }
 
-pub fn decrement(ctx: Context<Update>) -> Result<()> {
+pub fn decrement(ctx: Context<UpdatePost>) -> Result<()> {
   let anaheim = &mut ctx.accounts.anaheim;
   anaheim.count = anaheim.count.checked_sub(1).ok_or(ErrorCode::Underflow)?;
   Ok(())
 }
 
-pub fn handle_increment(ctx: Context<Update>) -> Result<()> {
+pub fn handle_increment(ctx: Context<UpdatePost>) -> Result<()> {
   let anaheim = &mut ctx.accounts.anaheim;
   anaheim.value = anaheim.value.checked_add(1).unwrap_or(anaheim.value);
   Ok(())
