@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+=======
+// === instructions/mod.rs ===
+pub mod create_post;
+pub mod close_post;
+pub mod initialize;
+
+// === instructions/create_post.rs ===
+>>>>>>> fix-contexts
 use anchor_lang::prelude::*;
 
 use crate::state::post_account::PostAccount; // <- IMPORT DIRECT

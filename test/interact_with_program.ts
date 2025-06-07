@@ -1,22 +1,33 @@
-import * as anchor from "@project-serum/anchor";
+import * as anchor from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/anchor";
+import { Keypair } from "@solana/web3.js";
+import { Anaheim } from "../anchor/target/types/anaheim";
 
-// Charger le provider local
 const provider = anchor.AnchorProvider.env();
 anchor.setProvider(provider);
 
-// Charger l'IDL et initialiser le programme
-const idl = require("./target/idl/<program_name>.json");
-const programId = new anchor.web3.PublicKey("<PROGRAM_ID>");
-const program = new anchor.Program(idl, programId, provider);
+const program = anchor.workspace.Anaheim as Program<Anaheim>;
 
-// Appeler une instruction du programme
-await program.methods
-.createJournal("Hello, Solana")
-.accounts({
-journal: journalAccountPublicKey,
-user: wallet.publicKey,
-systemProgram: anchor.web3.SystemProgram.programId,
-})
-.rpc();
+describe("Anaheim interact test", () => {
+  it("Crée un post", async () => {
+    // Mocks
+    const postAccount = Keypair.generate();
+    const user        = Keypair.generate();
 
-console.log("Instruction exécutée avec succès !");
+    // Ici on peut await car on est dans une fonction async
+    const tx = await program.methods
+      .createPost("hello world post")
+      .accounts({
+        postAccount: postAccount.publicKey,
+        user:        user.publicKey,
+      })
+      .signers([user, postAccount])
+      .rpc();
+
+    console.log("✅ TX envoyé :", tx);
+
+    // Optionnel : on peut vérifier l’état du compte
+    const accountData = await program.account.postAccount.fetch(postAccount.publicKey);
+    expect(accountData.content.toString()).toContain("hello world post");
+  });
+});

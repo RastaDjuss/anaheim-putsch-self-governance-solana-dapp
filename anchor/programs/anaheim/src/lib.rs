@@ -1,25 +1,102 @@
-#![allow(clippy::result_large_err)]
-
 use anchor_lang::prelude::*;
 pub mod constants;
 pub mod error;
 pub mod state;
-pub mod instructions;
 pub mod handlers;
-pub mod close;
-pub mod utils;
+pub mod instructions;
+pub mod post;
+pub mod validate;
 pub mod contexts;
+pub mod close;
 
-use crate::contexts::create_user::CreateUser;
-use crate::handlers::create_user;
-use crate::contexts::create_user::__client_accounts_create_user;
+pub use instructions::*; // exposes instruction structs
 
-declare_id!("coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF");
+use handlers::{handle_create_post, handle_close_post};
+use anchor_lang::prelude::*;
+
+declare_id!("CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou");
 
 #[program]
 pub mod anaheim {
   use super::*;
-  pub fn create_user(ctx: Context<CreateUser>, username: String) -> Result<()> {
-    create_user::handler(ctx, username)
+
+  pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+    let account = &mut ctx.accounts.anaheim;
+    account.count = 0;
+    Ok(())
   }
+
+  pub fn increment(ctx: Context<UseAnaheim>) -> Result<()> {
+    ctx.accounts.anaheim.count += 1;
+    Ok(())
+  }
+
+  pub fn decrement(ctx: Context<UseAnaheim>) -> Result<()> {
+    ctx.accounts.anaheim.count -= 1;
+    Ok(())
+  }
+
+  pub fn set(ctx: Context<UseAnaheim>, value: u64) -> Result<()> {
+    ctx.accounts.anaheim.count = value;
+    Ok(())
+  }
+
+  pub fn close(_ctx: Context<CloseAnaheim>) -> Result<()> {
+    Ok(())
+  }
+
+  pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
+    if content.len() > 280 {
+      return err!(ErrorCode::ContentTooLong);
+    }
+    Ok(())
+  }
+}
+
+#[derive(Accounts)]
+pub struct Initialize<'info> {
+  #[account(init, payer = payer, space = 8 + 8)]
+  pub anaheim: Account<'info, AnaheimAccount>,
+  #[account(mut)]
+  pub payer: Signer<'info>,
+  pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct UseAnaheim<'info> {
+  #[account(mut)]
+  pub anaheim: Account<'info, AnaheimAccount>,
+}
+
+#[derive(Accounts)]
+pub struct CloseAnaheim<'info> {
+  #[account(mut, close = payer)]
+  pub anaheim: Account<'info, AnaheimAccount>,
+  #[account(mut)]
+  pub payer: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct CreatePost<'info> {
+  #[account(init, payer = user, space = 8 + 280)]
+  pub post_account: Account<'info, PostAccount>,
+  #[account(mut)]
+  pub user: Signer<'info>,
+  pub system_program: Program<'info, System>,
+}
+
+#[account]
+pub struct AnaheimAccount {
+  pub count: u64,
+}
+
+#[account]
+pub struct PostAccount {
+  pub content: String,
+}
+
+#[error_code]
+pub enum ErrorCode {
+  #[msg("Content too long")]
+  ContentTooLong,
 }

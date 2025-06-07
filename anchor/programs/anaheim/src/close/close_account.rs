@@ -8,4 +8,3 @@ pub struct CloseAccount<'info> {
   #[account(mut)]
   pub user: Signer<'info>,
 }
-

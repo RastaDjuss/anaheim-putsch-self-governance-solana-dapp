@@ -87,6 +87,7 @@ export type Anaheim = {
   "errors": [
     {
       "code": 6000,
+<<<<<<< HEAD
       "name": "alreadyVoted",
       "msg": "User has already voted."
     },
@@ -129,6 +130,20 @@ export type Anaheim = {
       "code": 6008,
       "name": "usernameExists",
       "msg": "Username already exists."
+=======
+      "name": "invalidUsername",
+      "msg": "Invalid username."
+    },
+    {
+      "code": 6001,
+      "name": "contentTooLong",
+      "msg": "Content exceeds max allowable length."
+    },
+    {
+      "code": 6002,
+      "name": "invalidContent",
+      "msg": "Invalid content."
+>>>>>>> fix-contexts
     }
   ],
   "types": [
@@ -147,6 +162,7 @@ export type Anaheim = {
             }
           },
           {
+<<<<<<< HEAD
             "name": "authority",
             "type": "pubkey"
           },
@@ -157,6 +173,15 @@ export type Anaheim = {
           {
             "name": "bump",
             "type": "u8"
+=======
+            "name": "content",
+            "type": {
+              "array": [
+                "u8",
+                280
+              ]
+            }
+>>>>>>> fix-contexts
           }
         ]
       }

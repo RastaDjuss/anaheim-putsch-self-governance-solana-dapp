@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "address": "coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF",
+=======
+  "address": "CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou",
+>>>>>>> fix-contexts
   "metadata": {
     "name": "anaheim",
     "version": "0.1.0",
@@ -81,6 +85,7 @@
   "errors": [
     {
       "code": 6000,
+<<<<<<< HEAD
       "name": "AlreadyVoted",
       "msg": "User has already voted."
     },
@@ -123,6 +128,20 @@
       "code": 6008,
       "name": "UsernameExists",
       "msg": "Username already exists."
+=======
+      "name": "InvalidUsername",
+      "msg": "Invalid username."
+    },
+    {
+      "code": 6001,
+      "name": "ContentTooLong",
+      "msg": "Content exceeds max allowable length."
+    },
+    {
+      "code": 6002,
+      "name": "InvalidContent",
+      "msg": "Invalid content."
+>>>>>>> fix-contexts
     }
   ],
   "types": [
@@ -141,6 +160,7 @@
             }
           },
           {
+<<<<<<< HEAD
             "name": "authority",
             "type": "pubkey"
           },
@@ -151,6 +171,15 @@
           {
             "name": "bump",
             "type": "u8"
+=======
+            "name": "content",
+            "type": {
+              "array": [
+                "u8",
+                280
+              ]
+            }
+>>>>>>> fix-contexts
           }
         ]
       }
