@@ -200,23 +200,18 @@ export type Anaheim = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidContent",
-      "msg": "The provided content is invalid or empty."
+      "name": "invalidUsername",
+      "msg": "Invalid username."
     },
     {
       "code": 6001,
       "name": "contentTooLong",
-      "msg": "The content length exceeds the maximum allowed."
+      "msg": "Content exceeds max allowable length."
     },
     {
       "code": 6002,
-      "name": "usernameTooLong",
-      "msg": "The username length exceeds the maximum allowed."
-    },
-    {
-      "code": 6003,
-      "name": "invalidUsername",
-      "msg": "Username is invalid."
+      "name": "invalidContent",
+      "msg": "Invalid content."
     }
   ],
   "types": [
@@ -239,7 +234,12 @@ export type Anaheim = {
         "fields": [
           {
             "name": "content",
-            "type": "string"
+            "type": {
+              "array": [
+                "u8",
+                280
+              ]
+            }
           }
         ]
       }

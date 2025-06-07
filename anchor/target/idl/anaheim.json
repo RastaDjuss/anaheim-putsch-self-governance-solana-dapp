@@ -1,5 +1,5 @@
 {
-  "address": "JCsWVpCWGhR1dDFPT1vEB1YWszLrURXev22RPEk3vwzH",
+  "address": "CJSrfD5XGt4RkvGYZ8ooCUQfTPbPdZEqfPCo68K1Qxou",
   "metadata": {
     "name": "anaheim",
     "version": "0.1.0",
@@ -194,23 +194,18 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidContent",
-      "msg": "The provided content is invalid or empty."
+      "name": "InvalidUsername",
+      "msg": "Invalid username."
     },
     {
       "code": 6001,
       "name": "ContentTooLong",
-      "msg": "The content length exceeds the maximum allowed."
+      "msg": "Content exceeds max allowable length."
     },
     {
       "code": 6002,
-      "name": "UsernameTooLong",
-      "msg": "The username length exceeds the maximum allowed."
-    },
-    {
-      "code": 6003,
-      "name": "InvalidUsername",
-      "msg": "Username is invalid."
+      "name": "InvalidContent",
+      "msg": "Invalid content."
     }
   ],
   "types": [
@@ -233,7 +228,12 @@
         "fields": [
           {
             "name": "content",
-            "type": "string"
+            "type": {
+              "array": [
+                "u8",
+                280
+              ]
+            }
           }
         ]
       }

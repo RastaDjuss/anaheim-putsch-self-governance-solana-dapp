@@ -43,12 +43,13 @@ pub mod anaheim {
     Ok(())
   }
 
-  pub fn create_post(_ctx: Context<CreatePost>, content: String) -> Result<()> {
+  pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
+    let post = &mut ctx.accounts.post_account;
 
-    if content.len() > 280 {
-      return err!(ErrorCode::ContentTooLong);
+    let content_bytes = content.as_bytes();
+    require!(content_bytes.len() <= 280, ErrorCode::ContentTooLong);
 
-    }
+    post.content[..content_bytes.len()].copy_from_slice(content_bytes);
 
     Ok(())
   }
