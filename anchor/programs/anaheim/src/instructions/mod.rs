@@ -1,7 +1,7 @@
 // === instructions/mod.rs ===
 pub mod create_post;
 pub mod close_post;
-pub use close_post::*;
+pub mod initialize;
 
 // === instructions/create_post.rs ===
 use anchor_lang::prelude::*;

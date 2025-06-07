@@ -1,7 +1,14 @@
 use anchor_lang::prelude::*;
-use crate::instructions::CreatePost;
 
-pub fn handle_create_post(_ctx: Context<CreatePost>) -> Result<()> {
-    // Post logic
-    Ok(())
+use crate::post::Post;
+
+#[derive(Accounts)]
+pub struct CreatePost<'info> {
+  #[account(init, payer = user, space = Post::LEN)]
+  pub post_account: Account<'info, Post>,
+
+  #[account(mut)]
+  pub user: Signer<'info>,
+
+  pub system_program: Program<'info, System>,
 }

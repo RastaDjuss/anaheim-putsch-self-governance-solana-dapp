@@ -1,17 +1,18 @@
+// === instructions/initialize.rs ou contexts/initialize.rs ===
 use anchor_lang::prelude::*;
-use crate::state::AnaheimAccount;
+use crate::state::anaheim_account::AnaheimAccount;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-  #[account(init, payer = user, space = 8 + 8)]
+  #[account(
+        init,
+        payer = payer,
+        space = AnaheimAccount::SIZE
+  )]
   pub anaheim: Account<'info, AnaheimAccount>,
-  #[account(mut)]
-  pub user: Signer<'info>,
-  pub system_program: Program<'info, System>,
-}
 
-pub fn handler(ctx: Context<Initialize>) -> Result<()> {
-  let account = &mut ctx.accounts.anaheim;
-  account.count = 0;
-  Ok(())
+  #[account(mut)]
+  pub payer: Signer<'info>,
+
+  pub system_program: Program<'info, System>, // ← 👁️ CECI EST OBLIGATOIRE
 }

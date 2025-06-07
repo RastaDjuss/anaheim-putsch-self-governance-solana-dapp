@@ -3,7 +3,12 @@ packages:
   - components/*
 onlyBuiltDependencies:
   - '@parcel/watcher'
+  - blake-hash
   - bufferutil
   - core-js
   - esbuild
+  - protobufjs
+  - sharp
+  - tiny-secp256k1
+  - usb
   - utf-8-validate
