@@ -242,6 +242,11 @@ export type Anaheim = {
       "code": 6008,
       "name": "usernameExists",
       "msg": "Username already exists."
+    },
+    {
+      "code": 6009,
+      "name": "unauthorized",
+      "msg": "Unauthorized action."
     }
   ],
   "types": [

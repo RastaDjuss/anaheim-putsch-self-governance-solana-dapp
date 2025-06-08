@@ -29,4 +29,7 @@ pub enum ErrorCode {
 
   #[msg("Username already exists.")]
   UsernameExists,
+
+  #[msg("Unauthorized action.")]
+  Unauthorized,
 }

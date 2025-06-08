@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::state::anaheim::Anaheim;  // c’est ici que se trouve ta struct #[account] Anaheim
-use crate::state::anaheim_account::AnaheimAccount;
+use crate::state::anaheim::Anaheim;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {

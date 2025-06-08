@@ -8,5 +8,6 @@ pub mod increment_handler;
 pub mod set;
 pub mod shared;
 pub mod update_post;
+pub mod handler_mine;
 
 

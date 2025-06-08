@@ -9,6 +9,8 @@ pub mod decrement;
 pub mod create_post;
 pub mod create_user;
 pub mod initialize;
+pub mod mine;
+
 use anchor_lang::system_program::System;
 use anchor_lang::Accounts;
 use anchor_lang::prelude::{Account, Program, Signer};
