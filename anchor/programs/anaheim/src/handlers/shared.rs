@@ -1,12 +1,11 @@
 // ===================== handlers/shared.rs =====================
 use anchor_lang::prelude::*;
 
-use crate::error::ErrorCode;
 use crate::contexts::update::UpdatePost;
 use crate::contexts::create_user::CreateUser;
 use crate::contexts::initialize::Initialize;
 use crate::contexts::create_post::CreatePost;
-
+pub use error::*;
 fn string_to_fixed<const N: usize>(s: &str) -> [u8; N] {
   let bytes = s.as_bytes();
   let mut array = [0u8; N];

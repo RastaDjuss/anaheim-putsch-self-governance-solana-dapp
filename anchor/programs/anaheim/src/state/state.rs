@@ -1,3 +1,4 @@
+//
 use anchor_lang::prelude::*;
 use crate::state::{PostAccount, UserVoteMarker};
 use crate::error::ErrorCode;
@@ -13,7 +14,7 @@ pub struct VotePost<'info> {
         has_one = author @ ErrorCode::InvalidAuthority,
   )]
   pub post: Account<'info, PostAccount>,
-    
+
   pub vote_marker: Account<'info, UserVoteMarker>,
 
   /// CHECK: Ce champ est juste comparé par clé

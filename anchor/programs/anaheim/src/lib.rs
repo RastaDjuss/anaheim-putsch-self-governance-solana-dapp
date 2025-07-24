@@ -1,8 +1,10 @@
+// anchor/programs/anaheim/src/lib.rs
 #![allow(deprecated)]
 #![allow(unexpected_cfgs)]
 
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::pubkey::Pubkey;
+
+pub use state::*;
 
 pub mod instructions;
 pub mod handlers;
@@ -20,9 +22,9 @@ pub use handlers::handle_create_user;
 pub use contexts::create_user::CreateUser as CreateUserContext;
 pub use utils::validation::string_utils::str_to_fixed_array;
 pub use instructions::create_user;
-use crate::program::Anaheim;
+pub use instructions::create_post;
 
-declare_id!("EEHDBR5yh1exjcMuZC9FyuBnfiAdESQ5xNtsFE1YoeCF");
+declare_id!("CHTVq7e9xEFqMf261QhruAmBZsuLCBAEr8NDgcYAnqcV");
 
 pub const ANAHEIM_IDL_ID: Pubkey = Pubkey::new_from_array([
   132, 157, 218, 39, 146, 184, 154, 229, 157, 208, 222, 217, 179, 105, 214, 114,
@@ -122,7 +124,6 @@ impl IdlInstruction for Anaheim {
     ANAHEIM_IDL_ID
   }
 }
-
 
 /// ─── PROGRAMME PRINCIPAL ────────────────────────────────────────────────────
 #[program]

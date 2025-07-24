@@ -1,5 +1,8 @@
+// anchor/programs/anaheim/src/state/anaheim.rs
+
 use anchor_lang::prelude::*;
 
+// ✅ Ceci suffit
 #[account]
 pub struct Anaheim {
   pub authority: Pubkey,

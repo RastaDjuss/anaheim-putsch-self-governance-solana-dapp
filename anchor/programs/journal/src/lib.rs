@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 
 // This is your program's public key and it will update
 // automatically when you build the project.
-declare_id!("CbfLcrxboYSixdH2Jk3PccUaPhSmRjmjLUx54ED2VYYe");
+declare_id!("6Use3gwxdkzTci1iyuTsc8NUMUW3ue7AkEpMhgnKxf4T");
 
 #[program]
 mod journal {

@@ -1,3 +1,4 @@
+// anchor/programs/anaheim/src/state/user_vote_marker.rs
 use anchor_lang::prelude::*;
 
 #[account]
@@ -9,5 +10,5 @@ pub struct UserVoteMarker {
 }
 
 impl UserVoteMarker {
-  pub const SIZE: usize = 8 + 32 + 32 + 1;
+  pub const SIZE: usize = 8 + 1 + 1 + 32 + 32;
 }
