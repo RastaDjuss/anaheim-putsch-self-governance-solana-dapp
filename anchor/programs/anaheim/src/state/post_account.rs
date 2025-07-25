@@ -4,11 +4,12 @@ use crate::constants::MAX_CONTENT_LENGTH;
 
 #[account]
 pub struct PostAccount {
-  pub content: [u8; MAX_CONTENT_LENGTH], // Using fixed-size array
+  pub content: String,
   pub author: Pubkey,
-  pub created_at: i64,
+  pub timestamp: i64,
+  pub vote_count: i64, // <-- ADD THIS LINE
 }
-
 impl PostAccount {
-  pub const SIZE: usize = 8 + MAX_CONTENT_LENGTH + 32 + 8;
+  // Update the size to include the new field
+  pub const SIZE: usize = 8 + (4 + MAX_CONTENT_LENGTH) + 32 + 8 + 8;
 }

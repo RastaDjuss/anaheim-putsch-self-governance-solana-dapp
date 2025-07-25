@@ -1,8 +1,8 @@
+// FILE: anchor/programs/anaheim/src/error.rs
 use anchor_lang::prelude::*;
 
 #[error_code]
 pub enum ErrorCode {
-
   #[msg("User has already voted.")]
   AlreadyVoted,
 
@@ -32,7 +32,7 @@ pub enum ErrorCode {
 
   #[msg("Unauthorized action.")]
   Unauthorized,
-  
+
   #[msg("Invalid authority on post.")]
   InvalidAuthority,
 }

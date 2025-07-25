@@ -1,10 +1,8 @@
-// === contexts/increment.rs ===
+// FILE: anchor/programs/anaheim/src/handlers/increment.rs
 use anchor_lang::prelude::*;
-use crate::state::anaheim_account::AnaheimAccount;
-
-#[derive(Accounts)]
-pub struct Increment<'info> {
-    #[account(mut)]
-    pub anaheim: Account<'info, AnaheimAccount>,
-    pub authority: Signer<'info>,
+use crate::instructions::use_anaheim::UseAnaheim;
+use crate::error::ErrorCode;
+pub fn handle_increment(ctx: Context<UseAnaheim>) -> Result<()> {
+    ctx.accounts.anaheim.count = ctx.accounts.anaheim.count.checked_add(1).ok_or(ErrorCode::Overflow)?;
+    Ok(())
 }

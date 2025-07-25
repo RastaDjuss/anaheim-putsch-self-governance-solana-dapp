@@ -1,6 +1,7 @@
 // ==================== anchor/programs/anaheim/src/instructions/vote_post.rs ====================
+use crate::state::user_vote_marker::*;
 use anchor_lang::prelude::*;
-use crate::state::{PostAccount, UserVoteMarker};
+use crate::state::{PostAccount};
 use crate::error::ErrorCode;
 
 #[derive(Accounts)]

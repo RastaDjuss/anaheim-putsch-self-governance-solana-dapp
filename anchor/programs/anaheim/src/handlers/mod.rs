@@ -1,5 +1,5 @@
 // anchor/programs/anaheim/src/handlers/mod.rs
-pub mod handle_create_user;
+pub mod create_user;
 pub mod handle_create_post;
 pub mod handle_close_post;
 pub mod decrement_handler;
@@ -11,6 +11,11 @@ pub mod shared;
 pub mod update_post;
 pub mod handler_mine;
 pub mod close;
+pub mod vote_post;
+pub use vote_post::*;
+
+pub use initialize_handler::*;
+
 pub use close::close_post_account;
 
 pub use handle_create_post::*;
