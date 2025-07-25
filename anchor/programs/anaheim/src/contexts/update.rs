@@ -1,6 +1,6 @@
 // ===================== contexts/update.rs =====================
 use anchor_lang::prelude::*;
-use crate::state::AnaheimAccount;
+use crate::state::anaheim_account::AnaheimAccount;
 
 #[derive(Accounts)]
 pub struct UpdatePost<'info> {

@@ -1,16 +1,11 @@
+// anchor/programs/anaheim/src/instructions/update.rs
 use anchor_lang::prelude::*;
 
-use crate::close::close_anaheim::CloseAnaheim;
 use crate::contexts::update::UpdatePost;
-use crate::contexts::initialize::Initialize;
-use crate::handlers::initialize_handler::initialize_handler;
-
+use crate::close::close_anaheim::CloseAnaheim;
+use crate::initialize::Initialize;
+use crate::handlers::initialize_handler::initialize_handler as init_handler;
 pub fn close(_ctx: Context<CloseAnaheim>) -> Result<()> {
-  Ok(())
-}
-
-pub fn decrement(ctx: Context<UpdatePost>) -> Result<()> {
-  ctx.accounts.anaheim.count = ctx.accounts.anaheim.count.checked_sub(1).unwrap();
   Ok(())
 }
 
@@ -19,9 +14,10 @@ pub fn increment(ctx: Context<UpdatePost>) -> Result<()> {
   Ok(())
 }
 
-pub fn initialize(mut ctx: Context<Initialize>) -> Result<()> {
-  initialize_handler(&mut ctx)
+pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+  init_handler(ctx)
 }
+
 
 pub fn set(ctx: Context<UpdatePost>, value: u8) -> Result<()> {
   ctx.accounts.anaheim.count = value as u64;

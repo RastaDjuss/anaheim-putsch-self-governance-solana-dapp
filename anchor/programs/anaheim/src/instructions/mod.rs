@@ -1,5 +1,4 @@
 // === instructions/create_post.rs ===
-use anchor_lang::prelude::*;
 
 pub mod vote_post;
 pub mod use_anaheim;
@@ -8,7 +7,6 @@ pub mod decrement;
 pub mod create_post;
 pub mod create_user;
 
-pub use create_user::*;
 pub mod initialize;
 pub mod mine;
 

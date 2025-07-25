@@ -1,7 +1,10 @@
 //
 use anchor_lang::prelude::*;
-use crate::state::{PostAccount };
-use crate::error::ErrorCode;
+
+pub use crate::error::ErrorCode;
+pub use crate::handlers::post_account::PostAccount;
+pub use crate::state::user_vote_marker::UserVoteMarker;
+
 
 #[derive(Accounts)]
 #[instruction(bump: u8)]

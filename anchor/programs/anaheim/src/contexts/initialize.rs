@@ -1,12 +1,12 @@
 // FILE: anchor/programs/anaheim/src/contexts/initialize.rs
 use anchor_lang::prelude::*;
-use crate::state::AnaheimAccount; // Correct import from the state module
+use crate::state::anaheim_account::AnaheimAccount;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-  #[account(init, payer = payer, space = AnaheimAccount::SIZE)]
+  #[account(init, payer = authority, space = AnaheimAccount::SIZE)]
   pub anaheim: Account<'info, AnaheimAccount>,
   #[account(mut)]
-  pub payer: Signer<'info>,
+  pub authority: Signer<'info>,
   pub system_program: Program<'info, System>,
 }

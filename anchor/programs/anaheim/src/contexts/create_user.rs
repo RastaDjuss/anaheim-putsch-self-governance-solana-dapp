@@ -1,6 +1,6 @@
 // FILE: anchor/programs/anaheim/src/contexts/create_user.rs
 use anchor_lang::prelude::*;
-use crate::state::UserAccount; // Correct import from the state module
+use crate::state::user_account::UserAccount; // Correct import from the state module
 
 #[derive(Accounts)]
 pub struct CreateUser<'info> {

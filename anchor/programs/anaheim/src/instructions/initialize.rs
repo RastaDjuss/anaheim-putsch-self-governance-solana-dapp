@@ -1,6 +1,7 @@
-// === instructions/initialize.rs ou contexts/initialize.rs ===
+// === instructions/initialize.rs
 use anchor_lang::prelude::*;
-use crate::state::AnaheimAccount;
+use crate::state::anaheim_account::AnaheimAccount;
+
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -17,5 +18,5 @@ pub struct Initialize<'info> {
   pub user: Signer<'info>,
 
   pub system_program: Program<'info, System>,
-    pub payer: ()
+    pub payer: Signer<'info>,
 }

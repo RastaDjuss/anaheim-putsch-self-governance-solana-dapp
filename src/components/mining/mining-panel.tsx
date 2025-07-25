@@ -7,8 +7,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { getAnaheimAccount, ANAHEIM_ACCOUNT_PUBKEY, ANAHEIM_PROGRAM_ID, createAnaheimProgram } from '@/lib/anaheim-program';
 import { web3 } from '@coral-xyz/anchor';
+import anaheimAccountKey from '../../../src/lib/anaheim-account-key.json'
 
-import anaheimAccountKey from '@/lib/anaheim-account-key.json';
 
 // ===================================================================
 // THIS IS THE DEFINITIVE FIX.

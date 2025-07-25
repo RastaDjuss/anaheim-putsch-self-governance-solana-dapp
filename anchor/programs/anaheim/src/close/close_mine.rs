@@ -1,7 +1,7 @@
 // programs/anaheim/src/close/close_mine.rs
 use anchor_lang::prelude::*;
 
-use crate::state::post_account::PostAccount;
+use crate::handlers::post_account::PostAccount;
 use crate::error::ErrorCode;
 
 #[derive(Accounts)]

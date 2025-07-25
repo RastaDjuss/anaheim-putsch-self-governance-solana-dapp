@@ -1,6 +1,7 @@
 // FILE: src/app/layout.tsx
 'use client'; // This MUST be a client component to use providers.
 
+import '@/lib/init'
 import React, { ReactNode, useMemo } from 'react';
 import './globals.css'; // This loads your stylesheet.
 

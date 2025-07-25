@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use crate::state::post_account::PostAccount;
+use crate::handlers::post_account::PostAccount;
 
 fn test() {
   let _post = PostAccount {

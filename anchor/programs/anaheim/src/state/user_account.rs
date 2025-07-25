@@ -1,12 +1,14 @@
 // FILE: anchor/programs/anaheim/src/state/user_account.rs
 use anchor_lang::prelude::*;
-use crate::constants::MAX_USERNAME_LENGTH;
 
 #[account]
 pub struct UserAccount {
-  pub name: String,
-  pub user_authority: Pubkey,
+  pub username: String,
+  pub authority: Pubkey,
+  pub bump: u8,
+  pub timestamp: i64,
 }
+
 impl UserAccount {
-  pub const SIZE: usize = 8 + (4 + MAX_USERNAME_LENGTH) + 32;
+  pub const SIZE: usize = 8 + 4 + 32 + 1 + 8;
 }

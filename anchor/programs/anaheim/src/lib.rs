@@ -1,121 +1,91 @@
-// anchor/programs/anaheim/src/lib.rs
+// File: programs/anaheim/src/lib.rs
+
 #![allow(deprecated)]
 #![allow(unexpected_cfgs)]
-// ─── IMPORTS STRUCTURÉS ─────────────────────────────────────────────
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+
+// ─── BASE ─────────────────────────────
 use anchor_lang::prelude::*;
-pub mod state;
-pub mod instructions;
-pub mod contexts;
-pub mod handlers;
-pub mod constants;
-pub mod error;
-pub mod utils;
+
+// ─── MODULES ──────────────────────────
 pub mod close;
+pub mod constants;
+pub mod contexts;
+pub mod error;
+pub mod handlers;
+pub mod instructions;
+pub mod post;
+pub mod state;
+pub mod test_post_account;
+pub mod utils;
+pub mod validate_post_content;
 
-mod validate_post_content;
+// ─── CONTEXT SHORTCUTS ────────────────
+pub use contexts::{
+  initialize,
+  create_user,
+  create_post,
+  vote_post,
+  mine,
+  update,
+};
+pub use instructions::use_anaheim;
 
-// ─── RÉEXPORTATION DES STRUCTS POUR #[program] ─────────────────────────
-pub use crate::contexts::initialize::Initialize;
-pub use crate::contexts::create_user::CreateUser;
-pub use crate::contexts::create_post::CreatePost;
-pub use crate::contexts::vote_post::VotePost;
-pub use crate::contexts::update::UpdatePost;
-pub use crate::instructions::use_anaheim::UseAnaheim;
+declare_id!("CKqr1tXUJxTkkBdkbpWNWEEyDBkrfus5JXKgZJcXJZBf");
 
-pub use crate::handlers::create_user::handle_create_user;
-pub use crate::handlers::handle_create_post;
-pub use crate::handlers::vote_post::handle_vote_post;
-pub use crate::handlers::initialize_handler::handle_initialize;
-pub use crate::handlers::handle_increment;
-
-// Autres exports d’erreurs ou de structs
-pub use error::ErrorCode;
-use crate::state::Anaheim;
-
-declare_id!("CHTVq7e9xEFqMf261QhruAmBZsuLCBAEr8NDgcYAnqcV");
-
-pub const ANAHEIM_IDL_ID: Pubkey = Pubkey::new_from_array([
-  132, 157, 218, 39, 146, 184, 154, 229, 157, 208, 222, 217, 179, 105, 214, 114,
-  145, 251, 14, 120, 48, 169, 34, 96, 132, 73, 172, 248, 93, 142, 25, 203,
-]);
-
-// 👇 Déclare le trait manquant
-pub trait IdlInstruction {
-  fn id() -> Pubkey;
-}
-pub const MAX_CONTENT_LENGTH: usize = 256;
-pub const MAX_USERNAME_LENGTH: usize = 32;
-
-/// ─── COMPTES STRUCTURÉS ─────────────────────────────────────────────────────
-#[account]
-pub struct UserAccount {
-  pub name: String,
-  pub user_authority: Pubkey,
-}
-impl UserAccount {
-  pub const SIZE: usize = 8 + 4 + MAX_USERNAME_LENGTH + 32;
-}
-
-#[account]
-pub struct PostAccount {
-  pub content: String,
-  pub author: Pubkey,
-  pub timestamp: i64,
-}
-
-#[account]
-pub struct AnaheimAccount {
-  pub authority: Pubkey,
-  pub count: u64,
-  pub value: u8,
-}
-impl AnaheimAccount {
-  pub const SIZE: usize = 8 + 32 + 8 + 1;
-}
-
-
-impl IdlInstruction for Anaheim {
-  fn id() -> Pubkey {
-    ANAHEIM_IDL_ID
-  }
-}
-
-/// ─── PROGRAMME PRINCIPAL ────────────────────────────────────────────────────
+// ─── PROGRAM ──────────────────────────
 #[program]
 pub mod anaheim {
   use super::*;
 
-  pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-    handle_initialize(ctx)
+  pub fn initialize(ctx: Context<initialize::Initialize>) -> Result<()> {
+    handlers::initialize_handler::initialize_handler(ctx)
   }
 
-  pub fn create_user(ctx: Context<CreateUser>, username: String) -> Result<()> {
-    handle_create_user(ctx, username)
+  pub fn create_user(ctx: Context<create_user::CreateUser>, username: String) -> Result<()> {
+    handlers::create_user::handle_create_user(ctx, username)
   }
 
-  pub fn create_post(ctx: Context<CreatePost>, content: String) -> Result<()> {
-    handle_create_post(ctx, content)
+  pub fn create_post(ctx: Context<create_post::CreatePost>, _content: String) -> Result<()> {
+    handlers::handle_create_post::handle_create_post(ctx)
   }
 
-  pub fn vote_post(ctx: Context<VotePost>, upvote: bool) -> Result<()> {
-    handle_vote_post(ctx, upvote)
+  pub fn vote_post(ctx: Context<vote_post::VotePost>, bump: u8, upvote: bool) -> Result<()> {
+    instructions::vote_post::handler(ctx, bump, upvote)
   }
 
-  pub fn increment(ctx: Context<UseAnaheim>) -> Result<()> {
-    handle_increment(ctx)
+  pub fn mine(ctx: Context<mine::Mine>) -> Result<()> {
+    handlers::handler_mine::handle_mine(ctx)
   }
 
-  pub fn decrement(ctx: Context<UseAnaheim>) -> Result<()> {
-    ctx.accounts.anaheim.count -= 1;
+  pub fn update_post(ctx: Context<update_post::UpdatePost>, new_content: String) -> Result<()> {
+    handlers::update_post::handle_update_post(ctx, new_content)
+  }
+
+  pub fn increment(ctx: Context<use_anaheim::UseAnaheim>) -> Result<()> {
+    handlers::handle_increment::handle_increment(ctx)
+  }
+
+  pub fn decrement(ctx: Context<update::UpdatePost>) -> Result<()> {
+    ctx.accounts.anaheim.count = ctx.accounts.anaheim.count.checked_sub(1).unwrap();
     Ok(())
   }
 
-  pub fn set(ctx: Context<UseAnaheim>, value: u64) -> Result<()> {
+  pub fn increment_by_one(ctx: Context<update::UpdatePost>) -> Result<()> {
+    ctx.accounts.anaheim.count = ctx.accounts.anaheim.count.checked_add(1).unwrap();
+    Ok(())
+  }
+
+  pub fn set(ctx: Context<use_anaheim::UseAnaheim>, value: u64) -> Result<()> {
     ctx.accounts.anaheim.count = value;
     Ok(())
   }
 
-  pub fn close(_ctx: Context<crate::close::close_anaheim::CloseAnaheim>) -> Result<()> {
+  pub fn close(ctx: Context<close::CloseAnaheim>) -> Result<()> {
     Ok(())
   }
 }
+
+
