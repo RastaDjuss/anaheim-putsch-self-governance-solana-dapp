@@ -1,7 +1,7 @@
 // File: contexts/mine.rs
 use anchor_lang::prelude::*;
 
-use crate::handlers::post_account::PostAccount;
+use crate::state::post_account::PostAccount;
 #[derive(Accounts)]
 pub struct Mine<'info> {
     #[account(mut)]

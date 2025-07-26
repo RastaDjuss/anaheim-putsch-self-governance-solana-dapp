@@ -1,6 +1,6 @@
 // close/close_account.rs
 use anchor_lang::prelude::*;
-use crate::handlers::post_account::PostAccount;
+use crate::state::post_account::PostAccount;
 
 #[derive(Accounts)]
 pub struct CloseAccount<'info> {

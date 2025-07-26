@@ -4,9 +4,9 @@ use crate::state::anaheim_account::AnaheimAccount;
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-  #[account(init, payer = authority, space = AnaheimAccount::SIZE)]
+  #[account(init, payer = payer, space = AnaheimAccount::SIZE)]
   pub anaheim: Account<'info, AnaheimAccount>,
   #[account(mut)]
-  pub authority: Signer<'info>,
+  pub payer: Signer<'info>,
   pub system_program: Program<'info, System>,
 }

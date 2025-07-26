@@ -1,19 +1,19 @@
 [toolchain]
-anchor_version = "0.31.0"
+anchor_version = "0.31.1"
 
 [features]
 resolution = true
 skip-lint = false
 
 [programs.devnet]
-anaheim = "CKqr1tXUJxTkkBdkbpWNWEEyDBkrfus5JXKgZJcXJZBf"
-journal = "8LLnccgZftBeyp28iMpZ8zLV1mKkGsecDKCYzdwt2iMd"
+anaheim = "2Mva4MMAcZJM5dP851ijcdeUHpju4MdQPevhV5SnvATM"
+journal = "vdcyELsX9MQW6Lc8dZx7BerZB3zjec5ZLwuqSFjPcpc"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [workspace]

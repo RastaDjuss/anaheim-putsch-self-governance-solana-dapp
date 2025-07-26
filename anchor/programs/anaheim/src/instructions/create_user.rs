@@ -1,4 +1,4 @@
-// instructions/create_user.rs
+// instructions/handle_create_user
 
 use anchor_lang::prelude::*;
 

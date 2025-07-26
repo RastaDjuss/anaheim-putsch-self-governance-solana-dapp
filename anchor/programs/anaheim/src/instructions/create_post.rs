@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::handlers::post_account::PostAccount;
+use crate::state::post_account::PostAccount;
 use crate::constants::MAX_CONTENT_LENGTH;
 #[derive(Accounts)]
 pub struct CreatePost<'info> {

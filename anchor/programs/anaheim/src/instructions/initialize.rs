@@ -1,6 +1,6 @@
 // === instructions/initialize.rs
 use anchor_lang::prelude::*;
-use crate::state::anaheim_account::AnaheimAccount;
+use super::super::state::anaheim_account::AnaheimAccount;
 
 
 #[derive(Accounts)]

@@ -2,7 +2,7 @@
 use anchor_lang::prelude::*;
 
 pub use crate::error::ErrorCode;
-pub use crate::handlers::post_account::PostAccount;
+use crate::state::post_account::PostAccount;
 pub use crate::state::user_vote_marker::UserVoteMarker;
 
 

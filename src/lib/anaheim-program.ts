@@ -2,8 +2,8 @@
 import { BorshAccountsCoder, Program, AnchorProvider } from '@coral-xyz/anchor';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Anaheim } from '../../../anchor/target/types/anaheim';
-import IDL from '../../../anchor/target/idl/anaheim.json';
+import { Anaheim } from '../../anchor/target/types/anaheim';
+import IDL from '../../anchor/target/idl/anaheim.json';
 
 const programIdString = process.env.NEXT_PUBLIC_ANAHEIM_PROGRAM_ID;
 if (!programIdString) { throw new Error("FATAL ERROR: Program ID not in .env"); }

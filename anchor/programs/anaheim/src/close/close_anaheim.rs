@@ -1,3 +1,4 @@
+// Dans close_anaheim.rs
 use anchor_lang::prelude::*;
 use crate::state::anaheim_account::AnaheimAccount;
 
@@ -8,8 +9,8 @@ pub struct CloseAnaheim<'info> {
   #[account(mut)]
   pub authority: Signer<'info>,
 }
+
 pub fn handler(_ctx: Context<CloseAnaheim>) -> Result<()> {
   msg!("Closing Anaheim account...");
-  // Any pre-close logic here
   Ok(())
 }

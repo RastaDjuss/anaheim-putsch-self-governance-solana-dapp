@@ -6,7 +6,7 @@ use crate::contexts::create_post::CreatePost;
 use crate::error::ErrorCode;
 use crate::instructions::initialize::Initialize;
 use crate::instructions::use_anaheim::UseAnaheim;
-use crate::handlers::post_account::PostAccount;
+use crate::state::post_account::PostAccount;
 pub fn initialize_handler(ctx: Context<Initialize>) -> Result<()> {
   let account = &mut ctx.accounts.anaheim;
   account.count = 0;

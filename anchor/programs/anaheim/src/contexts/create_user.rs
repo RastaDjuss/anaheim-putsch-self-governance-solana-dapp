@@ -1,4 +1,4 @@
-// FILE: anchor/programs/anaheim/src/contexts/create_user.rs
+// FILE: anchor/programs/anaheim/src/contexts/handle_create_user
 use anchor_lang::prelude::*;
 use crate::state::user_account::UserAccount; // Correct import from the state module
 
