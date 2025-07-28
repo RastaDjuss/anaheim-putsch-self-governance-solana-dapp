@@ -6,14 +6,14 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-anaheim = "CHTVq7e9xEFqMf261QhruAmBZsuLCBAEr8NDgcYAnqcV"
-journal = "6Use3gwxdkzTci1iyuTsc8NUMUW3ue7AkEpMhgnKxf4T"
+anaheim = "4jhEaivAmMLvtkXbhShN7ivx5MSxc27JKj3gXLGZnWuC"
+journal = "D17vDa92h2Yf4sCKEurxGUVCbs1v4CceqHRVHiF7QJwf"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [workspace]

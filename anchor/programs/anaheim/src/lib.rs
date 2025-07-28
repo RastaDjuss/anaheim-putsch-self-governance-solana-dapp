@@ -24,7 +24,7 @@ pub use utils::validation::string_utils::str_to_fixed_array;
 pub use instructions::create_user;
 pub use instructions::create_post;
 
-declare_id!("CHTVq7e9xEFqMf261QhruAmBZsuLCBAEr8NDgcYAnqcV");
+declare_id!("4jhEaivAmMLvtkXbhShN7ivx5MSxc27JKj3gXLGZnWuC");
 
 pub const ANAHEIM_IDL_ID: Pubkey = Pubkey::new_from_array([
   132, 157, 218, 39, 146, 184, 154, 229, 157, 208, 222, 217, 179, 105, 214, 114,
@@ -77,6 +77,16 @@ impl AnaheimAccount {
 }
 
 /// ─── CONTEXTES D'INSTRUCTIONS ───────────────────────────────────────────────
+ #[derive(Accounts)]
+ pub struct Initialize<'info> {
+   #[account(init, payer = payer, space = AnaheimAccount::SIZE, seeds = [b"anaheim", payer.key().as_ref()], bump)]
+   pub anaheim: Account<'info, AnaheimAccount>,
+
+   #[account(mut)]
+   pub payer: Signer<'info>,
+
+   pub system_program: Program<'info, System>,
+ }
 #[derive(Accounts)]
 pub struct CreateUser<'info> {
   #[account(init, payer = authority, space = UserAccount::SIZE)]
@@ -95,14 +105,6 @@ pub struct CreatePost<'info> {
   pub system_program: Program<'info, System>,
 }
 
-#[derive(Accounts)]
-pub struct Initialize<'info> {
-  #[account(init, payer = payer, space = AnaheimAccount::SIZE)]
-  pub anaheim: Account<'info, AnaheimAccount>,
-  #[account(mut)]
-  pub payer: Signer<'info>,
-  pub system_program: Program<'info, System>,
-}
 
 #[derive(Accounts)]
 pub struct UseAnaheim<'info> {

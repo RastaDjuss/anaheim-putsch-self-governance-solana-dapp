@@ -4,23 +4,22 @@ use crate::state::{PostAccount, UserVoteMarker};
 use crate::error::ErrorCode;
 
 #[derive(Accounts)]
-#[instruction(bump: u8)]
 pub struct VotePost<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
     #[account(
-    mut,
-    has_one = author @ ErrorCode::InvalidAuthority,
+        mut,
+        has_one = author @ ErrorCode::InvalidAuthority,
     )]
     pub post: Account<'info, PostAccount>,
 
     #[account(
-    init_if_needed,
-    payer = user,
-    space = UserVoteMarker::SIZE,
-    seeds = [b"vote_marker", post.key().as_ref(), user.key().as_ref()],
-    bump
+        init_if_needed,
+        payer = user,
+        space = UserVoteMarker::SIZE,
+        seeds = [b"vote_marker", post.key().as_ref(), user.key().as_ref()],
+        bump
     )]
     pub vote_marker: Account<'info, UserVoteMarker>,
 
@@ -37,20 +36,18 @@ impl<'info> VotePost<'info> {
     }
 }
 
-pub fn handler(ctx: Context<VotePost>, _bump: u8, upvote: bool) -> Result<()> {
+pub fn handler(ctx: Context<VotePost>, upvote: bool) -> Result<()> {
     ctx.accounts.validate()?;
 
     let post = &mut ctx.accounts.post;
     let vote_marker = &mut ctx.accounts.vote_marker;
 
-    // Comptage des votes
     if upvote {
         post.vote_count = post.vote_count.checked_add(1).ok_or(ErrorCode::Overflow)?;
     } else {
         post.vote_count = post.vote_count.saturating_sub(1);
     }
 
-    // Mise à jour du marqueur de vote
     vote_marker.has_voted = true;
     vote_marker.is_upvote = upvote;
     vote_marker.post = post.key();

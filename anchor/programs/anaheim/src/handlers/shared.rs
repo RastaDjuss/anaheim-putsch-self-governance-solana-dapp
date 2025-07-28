@@ -5,13 +5,14 @@ use crate::contexts::update::UpdatePost;
 use crate::contexts::create_user::CreateUser;
 use crate::contexts::initialize::Initialize;
 use crate::contexts::create_post::CreatePost;
-pub use error::*;
+pub use crate::error::ErrorCode;
+
 fn string_to_fixed<const N: usize>(s: &str) -> [u8; N] {
+  let mut buffer = [0u8; N];
   let bytes = s.as_bytes();
-  let mut array = [0u8; N];
   let len = bytes.len().min(N);
-  array[..len].copy_from_slice(&bytes[..len]);
-  array
+  buffer[..len].copy_from_slice(&bytes[..len]);
+  buffer
 }
 
 pub fn initialize_handler(ctx: Context<Initialize>) -> Result<()> {
